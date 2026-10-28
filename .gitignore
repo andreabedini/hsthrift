@@ -11,3 +11,4 @@ folly-clib/folly
 folly-clib/folly-clib.cabal
 folly-clib/fast_float*
 folly-clib/v*.tar.gz
+buck-out

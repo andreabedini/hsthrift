@@ -1,0 +1,14 @@
+{
+  "revisions": {
+    "fizz": "3eb48587ca6154952adc7436973522291ab04485",
+    "mvfst": "fd8491e49b7b1c42d18d5e3762c40f61077d8090",
+    "wangle": "666f6f14ec104993e800165f770467279a79f218"
+  },
+  "sha256": {
+    "https://github.com/facebook/fbthrift/archive/ed498f3ec3500706322fe761a69513d72a8e9a70.tar.gz": "f3699275bbe53219e59f6be652a9b0fa799a4fba2fab72946add937fc7019f7e",
+    "https://github.com/facebook/folly/archive/557aa769d29b291583c214d3c068acc3c5c4f7c8.tar.gz": "589116433b06b00c6bd7f40c1ccc9baca97361e96f48ddc3a6393049e3f315e5",
+    "https://github.com/facebook/mvfst/archive/fd8491e49b7b1c42d18d5e3762c40f61077d8090.tar.gz": "6f734e98f192b8f82fae4386a99850b4d56cab55946892fdf6cfb0992bd70ad8",
+    "https://github.com/facebook/wangle/archive/666f6f14ec104993e800165f770467279a79f218.tar.gz": "b917d8eb7879a64e794cb6a0ae7885ef43450623f097dab71b6762881c9eb4f4",
+    "https://github.com/facebookincubator/fizz/archive/3eb48587ca6154952adc7436973522291ab04485.tar.gz": "1c443ffa1cf1f640897beef16fe41cf83f7b564559aa7a580e026bde93177566"
+  }
+}

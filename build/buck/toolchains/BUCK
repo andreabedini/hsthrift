@@ -1,0 +1,52 @@
+load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
+load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
+load("@prelude//tests:test_toolchain.bzl", "noop_test_toolchain")
+load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain", "system_python_toolchain")
+load("@prelude//toolchains:remote_test_execution.bzl", "remote_test_execution_toolchain")
+
+# The compilers the getdeps_project builds of build/buck/deps use (cc and
+# c++ in PATH are gcc's on Linux), with the same architecture flags: folly
+# must be compiled with the same ones as the code using it (see
+# folly/container/detail/F14IntrinsicsAvailability.h).
+system_cxx_toolchain(
+    name = "cxx",
+    compiler = "gcc",
+    compiler_type = "gcc",
+    cxx_compiler = "g++",
+    linker = "g++",
+    c_flags = select({
+        "config//cpu:x86_64": ["-march=haswell"],
+        "DEFAULT": [],
+    }),
+    cxx_flags = select({
+        "config//cpu:x86_64": ["-march=haswell"],
+        "DEFAULT": [],
+    }),
+    visibility = ["PUBLIC"],
+)
+
+system_genrule_toolchain(
+    name = "genrule",
+    visibility = ["PUBLIC"],
+)
+
+system_python_toolchain(
+    name = "python",
+    visibility = ["PUBLIC"],
+)
+
+system_python_bootstrap_toolchain(
+    name = "python_bootstrap",
+    visibility = ["PUBLIC"],
+)
+
+# For sh_test
+noop_test_toolchain(
+    name = "test",
+    visibility = ["PUBLIC"],
+)
+
+remote_test_execution_toolchain(
+    name = "remote_test_execution",
+    visibility = ["PUBLIC"],
+)

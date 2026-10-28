@@ -1,0 +1,26 @@
+# Not a getdeps manifest upstream: folly at build/deps/github_hashes uses
+# the zcrx API of io_uring whenever <liburing.h> exists, which needs
+# liburing 2.15 or later, and some distributions have an older one.
+# build/buck/generate.py reads this directory before fbcode_builder's.
+#
+# liburing's configure is not autoconf's: getdeps would pass it
+# --disable-shared, which it rejects. The generator does not.
+#
+# The patch makes configure put its BPF test file in its temporary
+# directory (which honours TMPDIR) rather than in /tmp.
+
+[manifest]
+name = liburing
+
+[download]
+url = https://github.com/axboe/liburing/archive/refs/tags/liburing-2.15.tar.gz
+sha256 = 8d052f2622dcb3678cbaee5ff582a87572672a6c0a56533cdda5b65cb636120a
+
+[build]
+builder = autoconf
+subdir = liburing-liburing-2.15
+patchfile = liburing-configure-tmpdir.patch
+
+[make.build_args]
+library
+
