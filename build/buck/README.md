@@ -123,9 +123,24 @@ libfolly`. That file is not in the repository (the Makefile makes it from
 
     make setup-folly-buck
 
+The Haskell that the Makefile's `thrift-hs` generates with thrift-compiler
+(the `gen-hs2` directories) is made by targets of `thrift/BUCK`, with
+`thrift_hs` (`thrift/defs.bzl`), and given to `plan.bxl` as `--generated
+DIR=TARGET`. The components of the package DIR is in see TARGET's output
+at DIR, and the glob of the package leaves DIR out, so a `gen-hs2` that
+`make` left there is not used. A `thrift_hs` target takes the Thrift files
+from the package's `cabal_package` target in the plan, whose name has the
+package's version in it: change it in `thrift/BUCK` when the version
+changes.
+
 So far the plan has `fb-stubs`, `mangle`, `folly-clib`, `fb-util` (with
-`+folly`) and `thrift-compiler`:
+`+folly`), `thrift-compiler` and `thrift-lib`:
 
     buck2 run //:exe-mangle -- "int foo(int, char const*)"
     buck2 build //:fb-util
     buck2 run //:exe-thrift-compiler -- --hs $PWD/lib/if/RpcOptions.thrift -o /tmp/out
+    buck2 build //:thrift-lib
+
+thrift-compiler is a tool of the build there, so Buck2 builds it, and what
+it depends on (fb-util, and so folly), in the configuration of the tools as
+well as in that of the packages: folly is built twice.

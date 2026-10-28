@@ -1,0 +1,14 @@
+# The Haskell that thrift-compiler makes for the packages of the build plan
+# in the root BUCK file (see the README).
+
+load(":defs.bzl", "thrift_hs")
+
+thrift_hs(
+    name = "thrift-lib",
+    package = "//:thrift-lib-0.2.0.0-package",
+    files = [
+        "if/RpcOptions.thrift",
+        "if/ApplicationException.thrift",
+    ],
+    visibility = ["PUBLIC"],
+)

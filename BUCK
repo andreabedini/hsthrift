@@ -2,11 +2,12 @@
 # cabal-solver-plan made for ghc-9.6.7 on x86_64-linux, with the index
 # of hackage.haskell.org as of 2025-04-13T19:49:54Z. Make it again with
 #
-#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --local-package compiler --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
+#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --local-package compiler --local-package lib --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --generated lib/gen-hs2=//build/buck/thrift:thrift-lib --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
 
-load("@timbuktu//rules/haskell:defs.bzl", "haskell_unit")
+load("@timbuktu//rules/haskell:defs.bzl", "haskell_binary", "haskell_unit")
 load("@timbuktu//rules/haskell/cabal:defs.bzl", "cabal_package", "cabal_simple_executable", "cabal_simple_library")
 load("@timbuktu//rules/haskell/cabal_install:build.bzl", "build")
+load("@timbuktu//rules/haskell/cabal_install:build_legacy.bzl", "build_legacy")
 load("@timbuktu//rules/haskell/cabal_install:pkg_src.bzl", "repo_package")
 
 # What the plan was made for
@@ -50,6 +51,24 @@ alias(
 alias(
     name = "thrift-compiler",
     actual = ":thrift-compiler-0.3.0.0",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-lib",
+    actual = ":thrift-lib-0.2.0.0",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-lib-test-helpers",
+    actual = ":thrift-lib-0.2.0.0-lib-test-helpers",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-lib-test-lib",
+    actual = ":thrift-lib-0.2.0.0-lib-test-lib",
     visibility = ["PUBLIC"],
 )
 
@@ -166,6 +185,44 @@ build(
         ":random-1.2.1.3",
         ":splitmix-0.1.1",
         ":template-haskell-2.20.0.0",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# STMonadTrans-0.4.8
+
+repo_package(
+    name = "STMonadTrans-0.4.8-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "229e84983eba8df59e5da922afd25c77403577c3cc9120ea9c59693ec9a3b52e",
+            "size": 2101,
+        },
+        "name": "STMonadTrans",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "839eff14d9f1d2d37f485edf116740d996e1ee9fa82ca2e0a73dfcae0ad5b851",
+            "size": 7458,
+            "type": "repo-tar",
+        },
+        "version": "0.4.8",
+    },
+)
+
+build(
+    name = "STMonadTrans-0.4.8",
+    pkg_name = "STMonadTrans",
+    pkg_version = "0.4.8",
+    component_name = "lib",
+    src = ":STMonadTrans-0.4.8-src",
+    flags = {},
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":mtl-2.3.1",
         ":transformers-0.6.1.0",
     ],
     visibility = ["PUBLIC"],
@@ -2156,6 +2213,39 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# haskell-lexer-1.2.1
+
+repo_package(
+    name = "haskell-lexer-1.2.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "393300e223f7b84c334d87780481bcede98392aa8bd82bc882d76b54b7d1c699",
+            "size": 1279,
+        },
+        "name": "haskell-lexer",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "9d76e1528106b1b32e6e465264e39381ca4b450b72a4b5331e7e5127640a1a41",
+            "size": 14602,
+            "type": "repo-tar",
+        },
+        "version": "1.2.1",
+    },
+)
+
+build(
+    name = "haskell-lexer-1.2.1",
+    pkg_name = "haskell-lexer",
+    pkg_version = "1.2.1",
+    component_name = "lib",
+    src = ":haskell-lexer-1.2.1-src",
+    flags = {},
+    deps = [":base-4.18.3.0"],
+    visibility = ["PUBLIC"],
+)
+
 # haskell-names-0.9.9.1
 
 repo_package(
@@ -2277,6 +2367,210 @@ build(
         ":directory-1.3.8.5",
         ":filepath-1.4.301.0",
         ":process-1.6.19.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hspec-2.11.12
+
+repo_package(
+    name = "hspec-2.11.12-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "d16b4a90470b415d56a1b561a1735566b2d8529bdbc5b26a965785768cd26ca1",
+            "size": 1766,
+        },
+        "name": "hspec",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "373a16d16f567b753f1bdb103d2515e1cf8d23768c63869d66f0b2f9809daffd",
+            "size": 11895,
+            "type": "repo-tar",
+        },
+        "version": "2.11.12",
+    },
+)
+
+build(
+    name = "hspec-2.11.12",
+    pkg_name = "hspec",
+    pkg_version = "2.11.12",
+    component_name = "lib",
+    src = ":hspec-2.11.12-src",
+    flags = {},
+    deps = [
+        ":QuickCheck-2.14.3",
+        ":base-4.18.3.0",
+        ":hspec-core-2.11.12",
+        ":hspec-discover-2.11.12",
+        ":hspec-expectations-0.8.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hspec-contrib-0.5.2
+
+repo_package(
+    name = "hspec-contrib-0.5.2-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "51d40310222fa0551bfacf820816b8a5cbbe3d5c2585db39a6a9e2c814a35910",
+            "size": 1583,
+        },
+        "name": "hspec-contrib",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "60898e870dce67c7b206015c7d77d7e5ae4c9d256d0c1f1c8f201de8f7ef0200",
+            "size": 3847,
+            "type": "repo-tar",
+        },
+        "version": "0.5.2",
+    },
+)
+
+build(
+    name = "hspec-contrib-0.5.2",
+    pkg_name = "hspec-contrib",
+    pkg_version = "0.5.2",
+    component_name = "lib",
+    src = ":hspec-contrib-0.5.2-src",
+    flags = {},
+    deps = [
+        ":HUnit-1.6.2.0",
+        ":base-4.18.3.0",
+        ":call-stack-0.4.0",
+        ":hspec-core-2.11.12",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hspec-core-2.11.12
+
+repo_package(
+    name = "hspec-core-2.11.12-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "4856221a10a31935006fa03cd2a4f185d89810d79616b9cbb714cf2c0f5cde17",
+            "size": 7498,
+        },
+        "name": "hspec-core",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "cc5125618268d1f99e4169349c4f38bf48d3ad0df6c4b56396e59c923800040c",
+            "size": 98557,
+            "type": "repo-tar",
+        },
+        "version": "2.11.12",
+    },
+)
+
+build(
+    name = "hspec-core-2.11.12",
+    pkg_name = "hspec-core",
+    pkg_version = "2.11.12",
+    component_name = "lib",
+    src = ":hspec-core-2.11.12-src",
+    flags = {},
+    deps = [
+        ":HUnit-1.6.2.0",
+        ":QuickCheck-2.14.3",
+        ":ansi-terminal-1.1.2",
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":call-stack-0.4.0",
+        ":containers-0.6.7",
+        ":deepseq-1.4.8.1",
+        ":directory-1.3.8.5",
+        ":filepath-1.4.301.0",
+        ":haskell-lexer-1.2.1",
+        ":hspec-expectations-0.8.4",
+        ":process-1.6.19.0",
+        ":quickcheck-io-0.2.0",
+        ":random-1.2.1.3",
+        ":stm-2.5.1.0",
+        ":tf-random-0.5",
+        ":time-1.12.2",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hspec-discover-2.11.12
+
+repo_package(
+    name = "hspec-discover-2.11.12-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "cb6b6048b6f0fa539176f4b8012241e4c518c9803eb7ef58097c42a68b15b1c3",
+            "size": 2171,
+        },
+        "name": "hspec-discover",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "97faa38ee295ca0c958b8c30a6a264d79e51857d724cf11304c0b942bc7e9b10",
+            "size": 6894,
+            "type": "repo-tar",
+        },
+        "version": "2.11.12",
+    },
+)
+
+build(
+    name = "hspec-discover-2.11.12",
+    pkg_name = "hspec-discover",
+    pkg_version = "2.11.12",
+    component_name = "lib",
+    src = ":hspec-discover-2.11.12-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":directory-1.3.8.5",
+        ":filepath-1.4.301.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hspec-expectations-0.8.4
+
+repo_package(
+    name = "hspec-expectations-0.8.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "4237f094a7931202ff57ac6475542b0b314b50a7024550e2b6eb87cfb0d4ff93",
+            "size": 1702,
+        },
+        "name": "hspec-expectations",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "7b8dde7e230ecfda90c95fd80478b244a45e68602fb3dd4a76f4710619be21ff",
+            "size": 6105,
+            "type": "repo-tar",
+        },
+        "version": "0.8.4",
+    },
+)
+
+build(
+    name = "hspec-expectations-0.8.4",
+    pkg_name = "hspec-expectations",
+    pkg_version = "0.8.4",
+    component_name = "lib",
+    src = ":hspec-expectations-0.8.4-src",
+    flags = {},
+    deps = [
+        ":HUnit-1.6.2.0",
+        ":base-4.18.3.0",
+        ":call-stack-0.4.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -2805,6 +3099,59 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# network-3.2.7.0
+
+repo_package(
+    name = "network-3.2.7.0-src",
+    package = {
+        "build-type": "Configure",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "e3a1ec8b8dd32f1d5a541679a67de60d6626487a95f20c6bc245268ae7142ab7",
+            "size": 5305,
+        },
+        "name": "network",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "68548e660632a3c09b230c33fe08cc880273372b485e65cbe7a717936de9728b",
+            "size": 145714,
+            "type": "repo-tar",
+        },
+        "version": "3.2.7.0",
+    },
+)
+
+haskell_binary(
+    name = "network-3.2.7.0-setup",
+    srcs = {
+        "Main.hs": ":network-3.2.7.0-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "network-3.2.7.0",
+    pkg_name = "network",
+    pkg_version = "3.2.7.0",
+    setup = ":network-3.2.7.0-setup",
+    src = ":network-3.2.7.0-src",
+    flags = {
+        "devel": False,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+        ":directory-1.3.8.5",
+        ":stm-2.5.1.0",
+    ],
+    exec_deps = [":hsc2hs-0.68.10-exe-hsc2hs"],
+    visibility = ["PUBLIC"],
+)
+
 # network-uri-2.6.4.2
 
 repo_package(
@@ -3118,6 +3465,43 @@ build(
         ":distributive-0.6.2.1",
         ":tagged-0.8.9",
         ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# quickcheck-io-0.2.0
+
+repo_package(
+    name = "quickcheck-io-0.2.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "7bf0b68fb90873825eb2e5e958c1b76126dcf984debb998e81673e6d837e0b2d",
+            "size": 1133,
+        },
+        "name": "quickcheck-io",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "fb779119d79fe08ff4d502fb6869a70c9a8d5fd8ae0959f605c3c937efd96422",
+            "size": 1843,
+            "type": "repo-tar",
+        },
+        "version": "0.2.0",
+    },
+)
+
+build(
+    name = "quickcheck-io-0.2.0",
+    pkg_name = "quickcheck-io",
+    pkg_version = "0.2.0",
+    component_name = "lib",
+    src = ":quickcheck-io-0.2.0-src",
+    flags = {},
+    deps = [
+        ":HUnit-1.6.2.0",
+        ":QuickCheck-2.14.3",
+        ":base-4.18.3.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3759,6 +4143,44 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# tf-random-0.5
+
+repo_package(
+    name = "tf-random-0.5-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "14012837d0f0e18fdbbe3d56e67da8622ee5e20b180abce952dd50bd9f36b326",
+            "size": 3983,
+        },
+        "name": "tf-random",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "2e30cec027b313c9e1794d326635d8fc5f79b6bf6e7580ab4b00186dadc88510",
+            "size": 18483,
+            "type": "repo-tar",
+        },
+        "version": "0.5",
+    },
+)
+
+build(
+    name = "tf-random-0.5",
+    pkg_name = "tf-random",
+    pkg_version = "0.5",
+    component_name = "lib",
+    src = ":tf-random-0.5-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":primitive-0.8.0.0",
+        ":random-1.2.1.3",
+        ":time-1.12.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # th-abstraction-0.7.1.0
 
 repo_package(
@@ -4076,6 +4498,263 @@ cabal_simple_executable(
         ":thrift-compiler-0.3.0.0",
     ],
     visibility = ["PUBLIC"],
+)
+
+# thrift-lib-0.2.0.0, in lib
+
+cabal_package(
+    name = "thrift-lib-0.2.0.0-package",
+    package_name = "thrift-lib",
+    version = "0.2.0.0",
+    srcs = glob(
+        ["lib/**"],
+        exclude = ["lib/BUCK", "lib/dist-newstyle/**", "lib/gen-hs2/**"],
+    ),
+    root = "lib",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Libraries for Haskell Thrift",
+    description = "Support for building client and server applications that\ncommunicate using the Thrift protocols.\n\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_source_files = [
+        "if/*.thrift",
+        "test/if/*.thrift",
+    ],
+    extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-lib-0.2.0.0",
+    package = ":thrift-lib-0.2.0.0-package",
+    exposed_modules = [
+        "Thrift.HasFields",
+        "Thrift.Monad",
+        "Thrift.CodegenTypesOnly",
+        "Thrift.Processor",
+        "Thrift.Api",
+        "Thrift.Codegen",
+        "Thrift.Channel",
+        "Thrift.Channel.SocketChannel",
+        "Thrift.Channel.SocketChannel.Server",
+        "Thrift.Protocol",
+        "Thrift.Protocol.Compact",
+        "Thrift.Protocol.Id",
+        "Thrift.Protocol.JSON",
+        "Thrift.Protocol.Binary",
+        "Thrift.Protocol.Binary.Internal",
+        "Thrift.Protocol.JSON.Base64",
+        "Thrift.Protocol.JSON.String",
+        "Thrift.Binary.Parser",
+        "Thrift.Protocol.ApplicationException.Types",
+        "Thrift.Protocol.RpcOptions.Types",
+        "Thrift.Util",
+    ],
+    hs_source_dirs = [
+        ".",
+        "gen-hs2",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    extra_libraries = ["stdc++"],
+    build_depends = [
+        ":QuickCheck-2.14.3",
+        ":STMonadTrans-0.4.8",
+        ":aeson-2.2.3.0",
+        ":aeson-pretty-0.8.10",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":bytestring-lexing-0.5.0.15",
+        ":containers-0.6.7",
+        ":data-default-0.8.0.1",
+        ":deepseq-1.4.8.1",
+        ":fb-stubs-0.1.0.1",
+        ":fb-util-0.2.0.1",
+        ":filepath-1.4.301.0",
+        ":ghc-9.6.7",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":hspec-2.11.12",
+        ":hspec-contrib-0.5.2",
+        ":network-3.2.7.0",
+        ":scientific-0.3.7.0",
+        ":some-1.0.6",
+        ":text-2.0.2",
+        ":text-show-3.10.5",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+        ":vector-0.13.2.0",
+        ":word8-0.1.3",
+    ],
+    build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
+    generated = {
+        "gen-hs2": "//build/buck/thrift:thrift-lib",
+    },
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-lib-0.2.0.0-lib-test-helpers",
+    package = ":thrift-lib-0.2.0.0-package",
+    library_name = "test-helpers",
+    exposed_modules = [
+        "Network",
+        "TestChannel",
+    ],
+    library_visibility = "public",
+    hs_source_dirs = ["test/helpers"],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":network-3.2.7.0",
+        ":thrift-lib-0.2.0.0",
+    ],
+    build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
+    generated = {
+        "gen-hs2": "//build/buck/thrift:thrift-lib",
+    },
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-lib-0.2.0.0-lib-test-lib",
+    package = ":thrift-lib-0.2.0.0-package",
+    library_name = "test-lib",
+    exposed_modules = [
+        "TestCommon",
+        "Math.Types",
+        "Math.Adder.Client",
+        "Math.Calculator.Client",
+        "Math.Adder.Service",
+        "Math.Calculator.Service",
+        "HsTest.Types",
+        "Facebook.Thrift.Annotation.Thrift.Thrift.Types",
+        "Scope.Types",
+    ],
+    hs_source_dirs = [
+        "test/lib",
+        "test/gen-hs2",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":HUnit-1.6.2.0",
+        ":QuickCheck-2.14.3",
+        ":STMonadTrans-0.4.8",
+        ":aeson-2.2.3.0",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":data-default-0.8.0.1",
+        ":deepseq-1.4.8.1",
+        ":fb-stubs-0.1.0.1",
+        ":fb-util-0.2.0.1",
+        ":filepath-1.4.301.0",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":hspec-2.11.12",
+        ":hspec-contrib-0.5.2",
+        ":network-3.2.7.0",
+        ":text-2.0.2",
+        ":thrift-lib-0.2.0.0",
+        ":thrift-lib-0.2.0.0-lib-test-helpers",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+        ":vector-0.13.2.0",
+    ],
+    build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
+    generated = {
+        "gen-hs2": "//build/buck/thrift:thrift-lib",
+    },
 )
 
 # time-compat-1.9.8
@@ -4550,6 +5229,39 @@ build(
         ":unordered-containers-0.2.20",
         ":vector-0.13.2.0",
     ],
+    visibility = ["PUBLIC"],
+)
+
+# word8-0.1.3
+
+repo_package(
+    name = "word8-0.1.3-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "e5464d0600821a116467d4b12fef12b15ff040c3599500e5f0274225e78c6faf",
+            "size": 1397,
+        },
+        "name": "word8",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "2630934c75728bfbf390c1f0206b225507b354f68d4047b06c018a36823b5d8a",
+            "size": 6271,
+            "type": "repo-tar",
+        },
+        "version": "0.1.3",
+    },
+)
+
+build(
+    name = "word8-0.1.3",
+    pkg_name = "word8",
+    pkg_version = "0.1.3",
+    component_name = "lib",
+    src = ":word8-0.1.3-src",
+    flags = {},
+    deps = [":base-4.18.3.0"],
     visibility = ["PUBLIC"],
 )
 
