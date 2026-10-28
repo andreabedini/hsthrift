@@ -9,7 +9,6 @@ prebuilt_cxx_library(
         "-lboost_filesystem",
         "-lboost_program_options",
         "-lboost_regex",
-        "-lboost_system",
         "-lboost_thread",
     ],
     visibility = [

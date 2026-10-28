@@ -121,7 +121,9 @@ SYSTEM_LIBRARIES = {
         "boost_filesystem",
         "boost_program_options",
         "boost_regex",
-        "boost_system",
+        # Not boost_system: it is header-only, and its libboost_system.so (a
+        # linker script, on Fedora) is not something GHC can load for
+        # Template Haskell.
         "boost_thread",
     ],
     "double-conversion": ["double-conversion"],
