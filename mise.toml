@@ -1,0 +1,7 @@
+[tools]
+# The buck2 of timbuktu (see build/buck/README.md): its rules use the
+# prelude bundled with it.
+buck2 = "2026-10-01"
+buildifier = "10.1.0"
+# For timbuktu//rules/haskell/ghcup/ghcup.bxl, which pins GHC versions.
+yq = "4"

@@ -1,8 +1,11 @@
+load("@prelude//tests:test_toolchain.bzl", "noop_test_toolchain")
 load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
 load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
-load("@prelude//tests:test_toolchain.bzl", "noop_test_toolchain")
 load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain", "system_python_toolchain")
 load("@prelude//toolchains:remote_test_execution.bzl", "remote_test_execution_toolchain")
+load("@timbuktu//rules/haskell:toolchain.bzl", "ghc_toolchain", "system_ghc_toolchain")
+load("@timbuktu//rules/haskell/cabal_install:cabal_toolchain.bzl", "cabal_toolchain")
+load("@timbuktu//rules/haskell/cabal_install:solver_toolchain.bzl", "cabal_solver_plan_toolchain")
 
 # The compilers the getdeps_project builds of build/buck/deps use (cc and
 # c++ in PATH are gcc's on Linux), with the same architecture flags: folly
@@ -48,5 +51,68 @@ noop_test_toolchain(
 
 remote_test_execution_toolchain(
     name = "remote_test_execution",
+    visibility = ["PUBLIC"],
+)
+
+# The Haskell toolchains of the rules of timbuktu (the external cell
+# timbuktu, see .buckconfig).
+#
+# The GHC and cabal-install distributions are pinned in toolchains//ghcup,
+# made with GHCup's metadata by
+#
+#   buck2 bxl timbuktu//rules/haskell/ghcup/ghcup.bxl:pin -- --ghc 9.8.4
+#
+# (copy the file it prints to build/buck/toolchains/ghcup/BUCK; the versions
+# there are kept).
+#
+# toolchains//:haskell is the GHC of every Haskell rule. hsthrift is built
+# with 9.6.7 (its packages need ghc < 9.9; Glean's CI tests 9.6.7 too). The
+# tools the rules run (exec deps, like timbuktu's helpers, which need Cabal
+# 3.12 or later) are built with 9.12.2: Buck2 puts the exec platform marker
+# in the configuration of every exec dep. To change either:
+#
+#   buck2 build --config haskell.toolchain=toolchains//:ghc-9.12.2 ...
+#   buck2 build --config haskell.tools_toolchain=... ...
+toolchain_alias(
+    name = "haskell",
+    actual = select({
+        "prelude//cfg/exec_platform/marker:is_exec_platform[true]": read_root_config("haskell", "tools_toolchain", "toolchains//:ghc-9.12.2"),
+        "DEFAULT": read_root_config("haskell", "toolchain", "toolchains//:ghc-9.6.7"),
+    }),
+    visibility = ["PUBLIC"],
+)
+
+ghc_toolchain(
+    name = "ghc-9.6.7",
+    distribution = "//ghcup:ghc-9.6.7",
+    visibility = ["PUBLIC"],
+)
+
+ghc_toolchain(
+    name = "ghc-9.12.2",
+    distribution = "//ghcup:ghc-9.12.2",
+    visibility = ["PUBLIC"],
+)
+
+# Whatever GHC is in PATH. Not hermetic.
+system_ghc_toolchain(
+    name = "ghc",
+    visibility = ["PUBLIC"],
+)
+
+cabal_toolchain(
+    name = "cabal",
+    distribution = "//ghcup:cabal-3.14.2.0",
+    visibility = ["PUBLIC"],
+)
+
+# What timbuktu's `plan` rule and plan.bxl make plans with: cabal-solver-plan,
+# from PATH unless `haskell.cabal_solver_plan` says where, and the Hackage
+# index of the cabal directory unless `haskell.hackage_index` names an
+# 01-index.tar.
+cabal_solver_plan_toolchain(
+    name = "cabal-solver-plan",
+    index = read_root_config("haskell", "hackage_index", ""),
+    path = read_root_config("haskell", "cabal_solver_plan", "cabal-solver-plan"),
     visibility = ["PUBLIC"],
 )

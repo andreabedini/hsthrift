@@ -2,6 +2,7 @@
   root = .
   prelude = prelude
   toolchains = build/buck/toolchains
+  timbuktu = build/buck/timbuktu
   none = none
 
 [cell_aliases]
@@ -14,12 +15,18 @@
 
 [external_cells]
   prelude = bundled
+  timbuktu = git
+
+# The Haskell rules: https://github.com/andreabedini/timbuktu
+[external_cell_timbuktu]
+  git_origin = https://github.com/andreabedini/timbuktu.git
+  commit_hash = 60854b81e8b0a257faafdc5bc219bf4d0ac0b472
 
 [build]
   execution_platforms = prelude//platforms:default
 
 [parser]
-  target_platform_detector_spec = target:root//...->prelude//platforms:default
+  target_platform_detector_spec = target:root//...->prelude//platforms:default target:toolchains//...->prelude//platforms:default target:timbuktu//...->prelude//platforms:default
 
 [project]
   ignore = .git, .jj, dist-newstyle

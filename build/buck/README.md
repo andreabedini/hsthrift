@@ -2,7 +2,14 @@
 
 Work in progress: building hsthrift with [Buck2](https://buck2.build). So
 far this covers the C++ dependencies that `new_install_deps.sh` builds with
-getdeps; the Haskell packages still build with cabal.
+getdeps, and the Haskell toolchains; the Haskell packages still build with
+cabal.
+
+buck2 itself, buildifier and yq are in `mise.toml`, at the versions
+[timbuktu](https://github.com/andreabedini/timbuktu) uses (its rules need
+the prelude bundled with that buck2):
+
+    mise install
 
 ## The C++ dependencies
 
@@ -47,3 +54,27 @@ every GitHub archive. Delete an entry to update it.
   exists, and needs 2.15 or later (see `manifests/liburing`).
 - Static rather than shared libraries (`build.sh` asks getdeps for shared
   ones).
+
+## The Haskell rules and toolchains
+
+The Haskell rules are timbuktu's, a git external cell pinned to a commit in
+`.buckconfig` (`[external_cell_timbuktu]`). The cell has to be called
+`timbuktu`: that is how the rules refer to themselves. To use a newer
+timbuktu, change `commit_hash`.
+
+The toolchains are in `toolchains/BUCK`. `toolchains//:haskell`, the GHC
+of every Haskell rule, is GHC 9.6.7 for the packages (hsthrift needs
+ghc < 9.9) and 9.12.2 for the tools the rules run, whose helpers need Cabal
+3.12 or later. The GHC and cabal-install distributions are pinned in
+`toolchains/ghcup/BUCK`, which is generated; to pin another version:
+
+    buck2 bxl timbuktu//rules/haskell/ghcup/ghcup.bxl:pin -- --ghc 9.8.4
+
+and copy the file it prints to `build/buck/toolchains/ghcup/BUCK` (the
+versions already there are kept). It needs curl and yq.
+
+timbuktu's own examples build from here (`buck2 test
+timbuktu//examples/cabal_simple/hello:hello-test` passes), but a test whose
+program is a file of the external cell cannot start: Buck2 runs it in the
+directory of the cell, `build/buck/timbuktu`, which does not exist.
+
