@@ -2,8 +2,8 @@
 
 Work in progress: building hsthrift with [Buck2](https://buck2.build). So
 far this covers the C++ dependencies that `new_install_deps.sh` builds with
-getdeps, the Haskell toolchains, and some of the Haskell packages (see "The
-Haskell packages"); the others still build with cabal.
+getdeps, the Haskell toolchains, and the Haskell packages but for their test
+suites (see "The Haskell packages").
 
 buck2 itself, buildifier and yq are in `mise.toml`, at the versions
 [timbuktu](https://github.com/andreabedini/timbuktu) uses (its rules need
@@ -114,7 +114,12 @@ The C and C++ libraries a package names in `pkgconfig-depends` are Buck2
 targets, given to `plan.bxl` as `--pkgconfig NAME=TARGET`: the libraries of
 `build/buck/deps`. pkg-config is not run. The solver takes each NAME as
 installed, and the package's targets get TARGET in `cxx_deps`; their
-headers reach whatever depends on the package too, as with Cabal.
+headers reach whatever depends on the package too, as with Cabal. So do the
+libraries of `extra-libraries` given as `--extra-library NAME=TARGET`,
+which are then not linked with `-l`: thrift-cpp-channel's fbthrift
+libraries (`thriftcpp2`, `thriftprotocol`, ...) are all the one archive of
+`build/buck/deps/fbthrift`. The others (`stdc++`, `boost_context`,
+`atomic`) are linked with `-l`, from the system.
 
 folly comes from `build/buck/deps/folly`, through `folly-clib` with
 `-bundled-folly`: there `folly-clib.cabal` is only `pkgconfig-depends:
@@ -123,24 +128,31 @@ libfolly`. That file is not in the repository (the Makefile makes it from
 
     make setup-folly-buck
 
-The Haskell that the Makefile's `thrift-hs` generates with thrift-compiler
-(the `gen-hs2` directories) is made by targets of `thrift/BUCK`, with
-`thrift_hs` (`thrift/defs.bzl`), and given to `plan.bxl` as `--generated
-DIR=TARGET`. The components of the package DIR is in see TARGET's output
-at DIR, and the glob of the package leaves DIR out, so a `gen-hs2` that
-`make` left there is not used. A `thrift_hs` target takes the Thrift files
-from the package's `cabal_package` target in the plan, whose name has the
-package's version in it: change it in `thrift/BUCK` when the version
-changes.
+The code the Makefile's `thrift-hs` and `thrift-cpp` generate (the
+`gen-hs2` and `gen-cpp2` directories) is made by the targets of
+`thrift/BUCK`, with `thrift_hs` and `thrift_cpp` (`thrift/defs.bzl`), and
+given to `plan.bxl` as `--generated DIR=TARGET`. The components of the
+package DIR is in see TARGET's output at DIR, and the glob of the package
+leaves DIR out, so a `gen-hs2` that `make` left there is not used. Each
+Thrift file is compiled in a copy of its package's directory, where
+`thrift/annotation` is the annotations of the top-level `thrift/` (the
+Makefile links it into the packages instead): its `cabal_package` target in
+the plan, whose name has the package's version in it. Change it in
+`thrift/BUCK` when the version changes. thrift-compiler makes the Haskell;
+the C++ is made by `thrift1`, from the fbthrift that the packages link.
 
-So far the plan has `fb-stubs`, `mangle`, `folly-clib`, `fb-util` (with
-`+folly`), `thrift-compiler` and `thrift-lib`:
+The plan has every package of the repository, with their libraries,
+sublibraries and executables. cabal-solver-plan does not plan test suites,
+so they are not in it, and neither is anything of `thrift-tests` but its
+`cabal_package` target (its Thrift files are compiled for
+`thrift-lib:test-lib`). Its targets are named after the packages, e.g.
 
     buck2 run //:exe-mangle -- "int foo(int, char const*)"
-    buck2 build //:fb-util
     buck2 run //:exe-thrift-compiler -- --hs $PWD/lib/if/RpcOptions.thrift -o /tmp/out
-    buck2 build //:thrift-lib
+    buck2 build //:thrift-lib //:thrift-cpp-channel //:thrift-server //:thrift-http //:thrift-haxl
+    buck2 build //:thrift-lib-test-lib //:thrift-server-test-lib //:thrift-http-test-lib
 
 thrift-compiler is a tool of the build there, so Buck2 builds it, and what
 it depends on (fb-util, and so folly), in the configuration of the tools as
-well as in that of the packages: folly is built twice.
+well as in that of the packages: folly is built twice. fbthrift is not:
+`thrift1` is run from the build for the packages.

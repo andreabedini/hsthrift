@@ -1,0 +1,9 @@
+# The annotations that Thrift files include as "thrift/annotation/...", for
+# the targets of build/buck/thrift (the Makefile links this directory into
+# the packages instead).
+
+filegroup(
+    name = "annotation",
+    srcs = glob(["annotation/*.thrift"]),
+    visibility = ["PUBLIC"],
+)

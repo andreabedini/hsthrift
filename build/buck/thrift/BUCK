@@ -1,14 +1,59 @@
-# The Haskell that thrift-compiler makes for the packages of the build plan
-# in the root BUCK file (see the README).
+# The code generated from Thrift files for the packages of the build plan in
+# the root BUCK file (see the README), as the Makefile's `thrift-hs` and
+# `thrift-cpp` make it.
 
-load(":defs.bzl", "thrift_hs")
+load(":defs.bzl", "thrift_cpp", "thrift_file", "thrift_hs")
+
+LIB = "//:thrift-lib-0.2.0.0-package"
+SERVER = "//:thrift-server-0.1.0.1-package"
+
+# What the test libraries of thrift-lib, thrift-server and thrift-http have
+# in common.
+TEST = [
+    thrift_file(LIB, "thrift/annotation/thrift.thrift"),
+    thrift_file(LIB, "thrift/annotation/scope.thrift"),
+    thrift_file(LIB, "test/if/math.thrift", ["--use-int"]),
+]
 
 thrift_hs(
     name = "thrift-lib",
-    package = "//:thrift-lib-0.2.0.0-package",
     files = [
-        "if/RpcOptions.thrift",
-        "if/ApplicationException.thrift",
+        thrift_file(LIB, "if/RpcOptions.thrift"),
+        thrift_file(LIB, "if/ApplicationException.thrift"),
+    ],
+    visibility = ["PUBLIC"],
+)
+
+thrift_hs(
+    name = "thrift-lib-test",
+    files = TEST + [
+        thrift_file(LIB, "test/if/echoer.thrift", ["--use-int"]),
+        thrift_file("//:thrift-tests-0.1.0.0-package", "if/hs_test.thrift"),
+    ],
+    visibility = ["PUBLIC"],
+)
+
+thrift_hs(
+    name = "thrift-server-test",
+    files = TEST + [
+        thrift_file(LIB, "test/if/echoer.thrift", ["--use-int"]),
+        thrift_file(SERVER, "test/if/hash_map.thrift"),
+    ],
+    visibility = ["PUBLIC"],
+)
+
+thrift_hs(
+    name = "thrift-http-test",
+    files = TEST + [
+        thrift_file(LIB, "test/if/echoer.thrift", ["--use-int"]),
+    ],
+    visibility = ["PUBLIC"],
+)
+
+thrift_cpp(
+    name = "thrift-cpp-channel",
+    files = [
+        thrift_file(LIB, "if/RpcOptions.thrift"),
     ],
     visibility = ["PUBLIC"],
 )

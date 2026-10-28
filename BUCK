@@ -2,7 +2,7 @@
 # cabal-solver-plan made for ghc-9.6.7 on x86_64-linux, with the index
 # of hackage.haskell.org as of 2025-04-13T19:49:54Z. Make it again with
 #
-#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --local-package compiler --local-package lib --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --generated lib/gen-hs2=//build/buck/thrift:thrift-lib --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
+#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --local-package compiler --local-package lib --local-package cpp-channel --local-package server --local-package http --local-package haxl --local-package tests --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --pkgconfig openssl=//build/buck/deps/system:openssl --pkgconfig libsodium=//build/buck/deps/system:libsodium --pkgconfig libzstd=//build/buck/deps/system:zstd --pkgconfig zlib=//build/buck/deps/system:zlib --extra-library thriftcpp2=//build/buck/deps/fbthrift:fbthrift --extra-library thriftmetadata=//build/buck/deps/fbthrift:fbthrift --extra-library thriftprotocol=//build/buck/deps/fbthrift:fbthrift --extra-library thrifttyperep=//build/buck/deps/fbthrift:fbthrift --extra-library thriftanyrep=//build/buck/deps/fbthrift:fbthrift --extra-library thrifttype=//build/buck/deps/fbthrift:fbthrift --extra-library transport=//build/buck/deps/fbthrift:fbthrift --extra-library rpcmetadata=//build/buck/deps/fbthrift:fbthrift --extra-library concurrency=//build/buck/deps/fbthrift:fbthrift --extra-library thrift-core=//build/buck/deps/fbthrift:fbthrift --extra-library async=//build/buck/deps/fbthrift:fbthrift --extra-library wangle=//build/buck/deps/wangle:wangle --extra-library fizz=//build/buck/deps/fizz:fizz --generated lib/gen-hs2=//build/buck/thrift:thrift-lib --generated lib/test/gen-hs2=//build/buck/thrift:thrift-lib-test --generated server/test/gen-hs2=//build/buck/thrift:thrift-server-test --generated http/test/gen-hs2=//build/buck/thrift:thrift-http-test --generated cpp-channel/if/gen-cpp2=//build/buck/thrift:thrift-cpp-channel --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
 
 load("@timbuktu//rules/haskell:defs.bzl", "haskell_binary", "haskell_unit")
 load("@timbuktu//rules/haskell/cabal:defs.bzl", "cabal_package", "cabal_simple_executable", "cabal_simple_library")
@@ -55,6 +55,30 @@ alias(
 )
 
 alias(
+    name = "thrift-cpp-channel",
+    actual = ":thrift-cpp-channel-0.1.0.0",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-haxl",
+    actual = ":thrift-haxl-0.2.0.0",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-http",
+    actual = ":thrift-http-0.3.0.0",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-http-test-lib",
+    actual = ":thrift-http-0.3.0.0-lib-test-lib",
+    visibility = ["PUBLIC"],
+)
+
+alias(
     name = "thrift-lib",
     actual = ":thrift-lib-0.2.0.0",
     visibility = ["PUBLIC"],
@@ -69,6 +93,18 @@ alias(
 alias(
     name = "thrift-lib-test-lib",
     actual = ":thrift-lib-0.2.0.0-lib-test-lib",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-server",
+    actual = ":thrift-server-0.1.0.1",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-server-test-lib",
+    actual = ":thrift-server-0.1.0.1-lib-test-lib",
     visibility = ["PUBLIC"],
 )
 
@@ -541,6 +577,189 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# appar-0.1.8
+
+repo_package(
+    name = "appar-0.1.8-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "a5d529bacbb74d566e4c5f9479af0637eac5957705f6db4d2670517489795de8",
+            "size": 1070,
+        },
+        "name": "appar",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "c4ceeddc26525b58d82c41b6d3e32141371a200a6794aae185b6266ccc81631f",
+            "size": 4037,
+            "type": "repo-tar",
+        },
+        "version": "0.1.8",
+    },
+)
+
+haskell_binary(
+    name = "appar-0.1.8-setup",
+    srcs = {
+        "Main.hs": ":appar-0.1.8-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "appar-0.1.8",
+    pkg_name = "appar",
+    pkg_version = "0.1.8",
+    setup = ":appar-0.1.8-setup",
+    src = ":appar-0.1.8-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# asn1-encoding-0.9.6
+
+repo_package(
+    name = "asn1-encoding-0.9.6-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "27ed8f6043aed79630313bb931f7c8e2b510f0b4586cd55c16ae040c7d1ea098",
+            "size": 2060,
+        },
+        "name": "asn1-encoding",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "d9f8deabd3b908e5cf83c0d813c08dc0143b3ec1c0d97f660d2cfa02c1c8da0a",
+            "size": 17343,
+            "type": "repo-tar",
+        },
+        "version": "0.9.6",
+    },
+)
+
+build(
+    name = "asn1-encoding-0.9.6",
+    pkg_name = "asn1-encoding",
+    pkg_version = "0.9.6",
+    component_name = "lib",
+    src = ":asn1-encoding-0.9.6-src",
+    flags = {},
+    deps = [
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":hourglass-0.2.12",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# asn1-parse-0.9.5
+
+repo_package(
+    name = "asn1-parse-0.9.5-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "77c0126d63070df2d82cb4cfa4febb26c4e280f6d854bc778c2fa4d80ce692b8",
+            "size": 976,
+        },
+        "name": "asn1-parse",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "8f1fe1344d30b39dc594d74df2c55209577722af1497204b4c2b6d6e8747f39e",
+            "size": 2951,
+            "type": "repo-tar",
+        },
+        "version": "0.9.5",
+    },
+)
+
+haskell_binary(
+    name = "asn1-parse-0.9.5-setup",
+    srcs = {
+        "Main.hs": ":asn1-parse-0.9.5-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "asn1-parse-0.9.5",
+    pkg_name = "asn1-parse",
+    pkg_version = "0.9.5",
+    setup = ":asn1-parse-0.9.5-setup",
+    src = ":asn1-parse-0.9.5-src",
+    flags = {},
+    deps = [
+        ":asn1-encoding-0.9.6",
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# asn1-types-0.3.4
+
+repo_package(
+    name = "asn1-types-0.3.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "8e879b3a5bbdd0031232eb84d904b5a3a2c20a18847692b996d774f4ff811355",
+            "size": 1025,
+        },
+        "name": "asn1-types",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "78ee92a251379298ca820fa53edbf4b33c539b9fcd887c86f520c30e3b4e21a8",
+            "size": 6472,
+            "type": "repo-tar",
+        },
+        "version": "0.3.4",
+    },
+)
+
+haskell_binary(
+    name = "asn1-types-0.3.4-setup",
+    srcs = {
+        "Main.hs": ":asn1-types-0.3.4-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "asn1-types-0.3.4",
+    pkg_name = "asn1-types",
+    pkg_version = "0.3.4",
+    setup = ":asn1-types-0.3.4-setup",
+    src = ":asn1-types-0.3.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":hourglass-0.2.12",
+        ":memory-0.18.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # assoc-1.1.1
 
 repo_package(
@@ -762,6 +981,42 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# auto-update-0.2.6
+
+repo_package(
+    name = "auto-update-0.2.6-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "4adf0d523c8b8fbd53f32b79f115d5f304da7e1a2b35b66625497add8e9abbb5",
+            "size": 1670,
+        },
+        "name": "auto-update",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "9a25cc5c9de2a20981ffe981ffcd51fee88597c802c1555dd08fa9c5c64e0e54",
+            "size": 14719,
+            "type": "repo-tar",
+        },
+        "version": "0.2.6",
+    },
+)
+
+build(
+    name = "auto-update-0.2.6",
+    pkg_name = "auto-update",
+    pkg_version = "0.2.6",
+    component_name = "lib",
+    src = ":auto-update-0.2.6-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":stm-2.5.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # base-compat-0.14.1
 
 repo_package(
@@ -872,6 +1127,114 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# base16-bytestring-1.0.2.0
+
+repo_package(
+    name = "base16-bytestring-1.0.2.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "a694e88f9ec9fc79f0b03f233d3fea592b68f70a34aac2ddb5bcaecb6562e2fd",
+            "size": 2630,
+        },
+        "name": "base16-bytestring",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "1d5a91143ef0e22157536093ec8e59d226a68220ec89378d5dcaeea86472c784",
+            "size": 7219,
+            "type": "repo-tar",
+        },
+        "version": "1.0.2.0",
+    },
+)
+
+build(
+    name = "base16-bytestring-1.0.2.0",
+    pkg_name = "base16-bytestring",
+    pkg_version = "1.0.2.0",
+    component_name = "lib",
+    src = ":base16-bytestring-1.0.2.0-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# base64-bytestring-1.2.1.0
+
+repo_package(
+    name = "base64-bytestring-1.2.1.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "45305ccf8914c66d385b518721472c7b8c858f1986945377f74f85c1e0d49803",
+            "size": 2502,
+        },
+        "name": "base64-bytestring",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "fbf8ed30edde271eb605352021431d8f1b055f95a56af31fe2eacf6bdfdc49c9",
+            "size": 13743,
+            "type": "repo-tar",
+        },
+        "version": "1.2.1.0",
+    },
+)
+
+build(
+    name = "base64-bytestring-1.2.1.0",
+    pkg_name = "base64-bytestring",
+    pkg_version = "1.2.1.0",
+    component_name = "lib",
+    src = ":base64-bytestring-1.2.1.0-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# basement-0.0.16
+
+repo_package(
+    name = "basement-0.0.16-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "e9458cbe67f396fb81900ec65852a582a2b7febd09b17a85adee576c8d7cc321",
+            "size": 5404,
+        },
+        "name": "basement",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "7fb77e249aef76ba5aed3059d556800ce02b614597c488ba01f0a16449146300",
+            "size": 134837,
+            "type": "repo-tar",
+        },
+        "version": "0.0.16",
+    },
+)
+
+build(
+    name = "basement-0.0.16",
+    pkg_name = "basement",
+    pkg_version = "0.0.16",
+    component_name = "lib",
+    src = ":basement-0.0.16-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":ghc-prim-0.10.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # bifunctors-5.6.2
 
 repo_package(
@@ -913,6 +1276,125 @@ build(
         ":th-abstraction-0.7.1.0",
         ":transformers-0.6.1.0",
     ],
+    visibility = ["PUBLIC"],
+)
+
+# blaze-builder-0.4.2.3
+
+repo_package(
+    name = "blaze-builder-0.4.2.3-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "3f2ff408e858e3ecac30183f98bbb14ce6cf6314c654bd9107e51defd386d5ef",
+            "size": 3733,
+        },
+        "name": "blaze-builder",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "66291874236b7342adab033e3cddae414a23a2865dfb44095dfc4e0b9d46703b",
+            "size": 60777,
+            "type": "repo-tar",
+        },
+        "version": "0.4.2.3",
+    },
+)
+
+build(
+    name = "blaze-builder-0.4.2.3",
+    pkg_name = "blaze-builder",
+    pkg_version = "0.4.2.3",
+    component_name = "lib",
+    src = ":blaze-builder-0.4.2.3-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+        ":ghc-prim-0.10.0",
+        ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# bsb-http-chunked-0.0.0.4
+
+repo_package(
+    name = "bsb-http-chunked-0.0.0.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 4,
+            "sha256": "1cce7371c31b1d3cfa3eb155e2aecffc0ec212d1d8a7e7c8a3b00ef76818a43b",
+            "size": 2687,
+        },
+        "name": "bsb-http-chunked",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "148309e23eb8b261c1de374712372d62d8c8dc8ee504c392809c7ec33c0a0e7c",
+            "size": 6630,
+            "type": "repo-tar",
+        },
+        "version": "0.0.0.4",
+    },
+)
+
+build(
+    name = "bsb-http-chunked-0.0.0.4",
+    pkg_name = "bsb-http-chunked",
+    pkg_version = "0.0.0.4",
+    component_name = "lib",
+    src = ":bsb-http-chunked-0.0.0.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# byteorder-1.0.4
+
+repo_package(
+    name = "byteorder-1.0.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "a952817dcbe20af0346fb55a28c13e95e2ddbf3e99f9b4fffdc063f150f13b20",
+            "size": 636,
+        },
+        "name": "byteorder",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "bd20bbb586947f99c38a4c93d9d0266f49f6fc581767b51ba568f6d5d52d2919",
+            "size": 2030,
+            "type": "repo-tar",
+        },
+        "version": "1.0.4",
+    },
+)
+
+haskell_binary(
+    name = "byteorder-1.0.4-setup",
+    srcs = {
+        "Main.hs": ":byteorder-1.0.4-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "byteorder-1.0.4",
+    pkg_name = "byteorder",
+    pkg_version = "1.0.4",
+    setup = ":byteorder-1.0.4-setup",
+    src = ":byteorder-1.0.4-src",
+    flags = {},
+    deps = [":base-4.18.3.0"],
     visibility = ["PUBLIC"],
 )
 
@@ -1021,6 +1503,132 @@ build(
     src = ":call-stack-0.4.0-src",
     flags = {},
     deps = [":base-4.18.3.0"],
+    visibility = ["PUBLIC"],
+)
+
+# case-insensitive-1.2.1.0
+
+repo_package(
+    name = "case-insensitive-1.2.1.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "9dfd3171fc7698cf8d931727d3af3a7b389135b583e46b5adac1f9d2026fff61",
+            "size": 2244,
+        },
+        "name": "case-insensitive",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "296dc17e0c5f3dfb3d82ced83e4c9c44c338ecde749b278b6eae512f1d04e406",
+            "size": 53609,
+            "type": "repo-tar",
+        },
+        "version": "1.2.1.0",
+    },
+)
+
+build(
+    name = "case-insensitive-1.2.1.0",
+    pkg_name = "case-insensitive",
+    pkg_version = "1.2.1.0",
+    component_name = "lib",
+    src = ":case-insensitive-1.2.1.0-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+        ":hashable-1.4.7.0",
+        ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# cborg-0.2.10.0
+
+repo_package(
+    name = "cborg-0.2.10.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "a52224590aca5c992a5ca0c6713439587076ad1f9c8e04ce2dca7ba2026e3654",
+            "size": 5406,
+        },
+        "name": "cborg",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "17fe070c38fc498cab49bcb9d6215b7747d53bedf96502e9bcce9cad73b9c797",
+            "size": 92122,
+            "type": "repo-tar",
+        },
+        "version": "0.2.10.0",
+    },
+)
+
+build(
+    name = "cborg-0.2.10.0",
+    pkg_name = "cborg",
+    pkg_version = "0.2.10.0",
+    component_name = "lib",
+    src = ":cborg-0.2.10.0-src",
+    flags = {
+        "optimize-gmp": True,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":deepseq-1.4.8.1",
+        ":ghc-bignum-1.3",
+        ":ghc-prim-0.10.0",
+        ":half-0.3.2",
+        ":primitive-0.8.0.0",
+        ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# cereal-0.5.8.3
+
+repo_package(
+    name = "cereal-0.5.8.3-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "87a227c7b510217ea059db3dd59d9665edd8f0d1d3d8de39458e371a1d9402fb",
+            "size": 2767,
+        },
+        "name": "cereal",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "99905220661b26e5bd91130bd9772554938608a5b1d717240a6eb331121e0f6a",
+            "size": 20166,
+            "type": "repo-tar",
+        },
+        "version": "0.5.8.3",
+    },
+)
+
+build(
+    name = "cereal-0.5.8.3",
+    pkg_name = "cereal",
+    pkg_version = "0.5.8.3",
+    component_name = "lib",
+    src = ":cereal-0.5.8.3-src",
+    flags = {
+        "bytestring-builder": False,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":ghc-prim-0.10.0",
+    ],
     visibility = ["PUBLIC"],
 )
 
@@ -1248,6 +1856,322 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# cookie-0.5.1
+
+repo_package(
+    name = "cookie-0.5.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "92b8ad295f6ce2a2c76a16747d62002c21421a5b007cc9b50cdd9ae085ff0f26",
+            "size": 1520,
+        },
+        "name": "cookie",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "1adde62726e3a3bbe147c02514fe0c4f5f2c5a2ff63842deac10c451a2a6f7a0",
+            "size": 6680,
+            "type": "repo-tar",
+        },
+        "version": "0.5.1",
+    },
+)
+
+build(
+    name = "cookie-0.5.1",
+    pkg_name = "cookie",
+    pkg_version = "0.5.1",
+    component_name = "lib",
+    src = ":cookie-0.5.1-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":data-default-class-0.2.0.0",
+        ":deepseq-1.4.8.1",
+        ":text-2.0.2",
+        ":time-1.12.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-1.0.4
+
+repo_package(
+    name = "crypton-1.0.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "353391cc2cc583cf5e44c35c46b7a548a218037f2249c40a9712e00d7c46580c",
+            "size": 14513,
+        },
+        "name": "crypton",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "b4885402206422450823e7001a40d0f6b11d0c603a0cb8bf8ff5a186b7c4011a",
+            "size": 649976,
+            "type": "repo-tar",
+        },
+        "version": "1.0.4",
+    },
+)
+
+build(
+    name = "crypton-1.0.4",
+    pkg_name = "crypton",
+    pkg_version = "1.0.4",
+    component_name = "lib",
+    src = ":crypton-1.0.4-src",
+    flags = {
+        "check_alignment": False,
+        "integer-gmp": True,
+        "old_toolchain_inliner": False,
+        "support_aesni": True,
+        "support_deepseq": True,
+        "support_pclmuldq": True,
+        "support_rdrand": True,
+        "support_sse": False,
+        "use_target_attributes": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":basement-0.0.16",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+        ":ghc-prim-0.10.0",
+        ":integer-gmp-1.1",
+        ":memory-0.18.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-connection-0.4.4
+
+repo_package(
+    name = "crypton-connection-0.4.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "eeb05a19d2c16991b0e10e3bfb70cbd4fcec47178fd0c92a9b3c87368e520b9c",
+            "size": 1510,
+        },
+        "name": "crypton-connection",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "247068c222a5feec66ada8d599bfc4a878bef2cac104636afbc7d5cae93ca491",
+            "size": 9324,
+            "type": "repo-tar",
+        },
+        "version": "0.4.4",
+    },
+)
+
+build(
+    name = "crypton-connection-0.4.4",
+    pkg_name = "crypton-connection",
+    pkg_version = "0.4.4",
+    component_name = "lib",
+    src = ":crypton-connection-0.4.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":crypton-x509-store-1.6.10",
+        ":crypton-x509-system-1.6.7",
+        ":data-default-0.8.0.1",
+        ":network-3.2.7.0",
+        ":socks-0.6.1",
+        ":tls-2.1.8",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-x509-1.7.7
+
+repo_package(
+    name = "crypton-x509-1.7.7-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "bc5834cabe1a301ff1ab50f373a50b5ce237ea4ea01f008f554544ab8cae1686",
+            "size": 2268,
+        },
+        "name": "crypton-x509",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "efece48c8c4adfee209979c2967037d90e6ba1b7b4e7bb1081d1d4cd93daf382",
+            "size": 21547,
+            "type": "repo-tar",
+        },
+        "version": "1.7.7",
+    },
+)
+
+build(
+    name = "crypton-x509-1.7.7",
+    pkg_name = "crypton-x509",
+    pkg_version = "1.7.7",
+    component_name = "lib",
+    src = ":crypton-x509-1.7.7-src",
+    flags = {},
+    deps = [
+        ":asn1-encoding-0.9.6",
+        ":asn1-parse-0.9.5",
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":crypton-1.0.4",
+        ":hourglass-0.2.12",
+        ":memory-0.18.0",
+        ":pem-0.2.4",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-x509-store-1.6.10
+
+repo_package(
+    name = "crypton-x509-store-1.6.10-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "a8cf7a1ead6dbdbb5693a4d145c2dff37b9a25d082e5702686f822662087dd1b",
+            "size": 1751,
+        },
+        "name": "crypton-x509-store",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "cef0631c0dad9ca43984e51140f030e7de9a1f4bfd0b2223ed9c6d41fe4238b0",
+            "size": 12720,
+            "type": "repo-tar",
+        },
+        "version": "1.6.10",
+    },
+)
+
+build(
+    name = "crypton-x509-store-1.6.10",
+    pkg_name = "crypton-x509-store",
+    pkg_version = "1.6.10",
+    component_name = "lib",
+    src = ":crypton-x509-store-1.6.10-src",
+    flags = {},
+    deps = [
+        ":asn1-encoding-0.9.6",
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":crypton-1.0.4",
+        ":crypton-x509-1.7.7",
+        ":directory-1.3.8.5",
+        ":filepath-1.4.301.0",
+        ":mtl-2.3.1",
+        ":pem-0.2.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-x509-system-1.6.7
+
+repo_package(
+    name = "crypton-x509-system-1.6.7-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "023ed573d82983bc473a37a89e0434a085b413be9f68d07e085361056afd4637",
+            "size": 1532,
+        },
+        "name": "crypton-x509-system",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "a436261e5f5e83d85080f57a5509c8224c9e75a6e56d0c43a7d2967052b634ca",
+            "size": 3496,
+            "type": "repo-tar",
+        },
+        "version": "1.6.7",
+    },
+)
+
+build(
+    name = "crypton-x509-system-1.6.7",
+    pkg_name = "crypton-x509-system",
+    pkg_version = "1.6.7",
+    component_name = "lib",
+    src = ":crypton-x509-system-1.6.7-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":crypton-x509-1.7.7",
+        ":crypton-x509-store-1.6.10",
+        ":directory-1.3.8.5",
+        ":filepath-1.4.301.0",
+        ":mtl-2.3.1",
+        ":pem-0.2.4",
+        ":process-1.6.19.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# crypton-x509-validation-1.6.14
+
+repo_package(
+    name = "crypton-x509-validation-1.6.14-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "0d9098835629777c42c414876c70f022f02e67223d7ad2ed8b8fcb1c863f79b4",
+            "size": 2253,
+        },
+        "name": "crypton-x509-validation",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "ed0e394127db59d66a0a8e4bde28fa0b8cc67cc9a810793b54a58e96df4c601d",
+            "size": 19693,
+            "type": "repo-tar",
+        },
+        "version": "1.6.14",
+    },
+)
+
+build(
+    name = "crypton-x509-validation-1.6.14",
+    pkg_name = "crypton-x509-validation",
+    pkg_version = "1.6.14",
+    component_name = "lib",
+    src = ":crypton-x509-validation-1.6.14-src",
+    flags = {},
+    deps = [
+        ":asn1-encoding-0.9.6",
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":crypton-1.0.4",
+        ":crypton-x509-1.7.7",
+        ":crypton-x509-store-1.6.10",
+        ":data-default-0.8.0.1",
+        ":hourglass-0.2.12",
+        ":iproute-1.7.15",
+        ":memory-0.18.0",
+        ":mtl-2.3.1",
+        ":pem-0.2.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # data-default-0.8.0.1
 
 repo_package(
@@ -1281,6 +2205,39 @@ build(
         ":base-4.18.3.0",
         ":containers-0.6.7",
     ],
+    visibility = ["PUBLIC"],
+)
+
+# data-default-class-0.2.0.0
+
+repo_package(
+    name = "data-default-class-0.2.0.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "788dc5c0be3981ca83ad11206e300a77ae8a1c8b9bc4f9630f563d37f540ccbd",
+            "size": 728,
+        },
+        "name": "data-default-class",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "0ae530c4fb0bd6c8a8ba399429ccd9c75f9c7696049117178f4ceeb2bd08d5b4",
+            "size": 1589,
+            "type": "repo-tar",
+        },
+        "version": "0.2.0.0",
+    },
+)
+
+build(
+    name = "data-default-class-0.2.0.0",
+    pkg_name = "data-default-class",
+    pkg_version = "0.2.0.0",
+    component_name = "lib",
+    src = ":data-default-class-0.2.0.0-src",
+    flags = {},
+    deps = [":data-default-0.8.0.1"],
     visibility = ["PUBLIC"],
 )
 
@@ -2003,6 +2960,44 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# half-0.3.2
+
+repo_package(
+    name = "half-0.3.2-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "dc49517b0f8c2523218c55190909e6a2ca0185563976a8000632ea45609e08c4",
+            "size": 1905,
+        },
+        "name": "half",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "19992e9fb6f4ea8a53b0ba0693565e8ec73c620b603e74b6d4f262e49d7df038",
+            "size": 8319,
+            "type": "repo-tar",
+        },
+        "version": "0.3.2",
+    },
+)
+
+build(
+    name = "half-0.3.2",
+    pkg_name = "half",
+    pkg_version = "0.3.2",
+    component_name = "lib",
+    src = ":half-0.3.2-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":binary-0.8.9.1",
+        ":deepseq-1.4.8.1",
+        ":template-haskell-2.20.0.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # happy-2.1.5
 
 repo_package(
@@ -2213,6 +3208,52 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# hashtables-1.4.2
+
+repo_package(
+    name = "hashtables-1.4.2-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "4940cab94a15d469845ccf5225f9cb3d354c15e8127ebb58425c8b681f7721d9",
+            "size": 10386,
+        },
+        "name": "hashtables",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "ca0e299fee6c0c918f45ce0907afbff1c3891998bb792d1717e4d5f12350ef0d",
+            "size": 58869,
+            "type": "repo-tar",
+        },
+        "version": "1.4.2",
+    },
+)
+
+build(
+    name = "hashtables-1.4.2",
+    pkg_name = "hashtables",
+    pkg_version = "1.4.2",
+    component_name = "lib",
+    src = ":hashtables-1.4.2-src",
+    flags = {
+        "bounds-checking": False,
+        "debug": False,
+        "detailed-profiling": False,
+        "portable": False,
+        "sse42": False,
+        "unsafe-tricks": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":primitive-0.8.0.0",
+        ":vector-0.13.2.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # haskell-lexer-1.2.1
 
 repo_package(
@@ -2327,6 +3368,96 @@ build(
         ":pretty-1.1.3.6",
     ],
     exec_deps = [":happy-2.1.5-exe-happy"],
+    visibility = ["PUBLIC"],
+)
+
+# haxl-2.5.1.1
+
+repo_package(
+    name = "haxl-2.5.1.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "4d0e788ea695c65aac7ef21b4f8a9f59411a0e8e6bb6083267e4e1c82b4bd1a0",
+            "size": 4265,
+        },
+        "name": "haxl",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "cf6b94e55a09cef86e02a65dc5e6106d48984d31f53a6d8b5055edf7fc7858dd",
+            "size": 78715,
+            "type": "repo-tar",
+        },
+        "version": "2.5.1.1",
+    },
+)
+
+build(
+    name = "haxl-2.5.1.1",
+    pkg_name = "haxl",
+    pkg_version = "2.5.1.1",
+    component_name = "lib",
+    src = ":haxl-2.5.1.1-src",
+    flags = {
+        "bench": False,
+    },
+    deps = [
+        ":aeson-2.2.3.0",
+        ":base-4.18.3.0",
+        ":binary-0.8.9.1",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":deepseq-1.4.8.1",
+        ":exceptions-0.10.7",
+        ":filepath-1.4.301.0",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":hashtables-1.4.2",
+        ":pretty-1.1.3.6",
+        ":stm-2.5.1.0",
+        ":text-2.0.2",
+        ":time-1.12.2",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+        ":vector-0.13.2.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# hourglass-0.2.12
+
+repo_package(
+    name = "hourglass-0.2.12-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "85c46cb6cd30c84546929926d4402a534f723651198e5945c9e59b9e699a8979",
+            "size": 3197,
+        },
+        "name": "hourglass",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "44335b5c402e80c60f1db6a74462be4ea29d1a9043aa994334ffee1164f1ca4a",
+            "size": 25797,
+            "type": "repo-tar",
+        },
+        "version": "0.2.12",
+    },
+)
+
+build(
+    name = "hourglass-0.2.12",
+    pkg_name = "hourglass",
+    pkg_version = "0.2.12",
+    component_name = "lib",
+    src = ":hourglass-0.2.12-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":deepseq-1.4.8.1",
+    ],
     visibility = ["PUBLIC"],
 )
 
@@ -2575,6 +3706,290 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# http-client-0.7.19
+
+repo_package(
+    name = "http-client-0.7.19-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "1f0950bab7fe751370ce4ec736c7836dd8a68a757a083ee7f690a9c976d7205e",
+            "size": 5613,
+        },
+        "name": "http-client",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "a02c1be082e8f48c959ac7150a48a405f8d4383e0942639481e84b220f29ad61",
+            "size": 96836,
+            "type": "repo-tar",
+        },
+        "version": "0.7.19",
+    },
+)
+
+build(
+    name = "http-client-0.7.19",
+    pkg_name = "http-client",
+    pkg_version = "0.7.19",
+    component_name = "lib",
+    src = ":http-client-0.7.19-src",
+    flags = {
+        "network-uri": True,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":base64-bytestring-1.2.1.0",
+        ":blaze-builder-0.4.2.3",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":containers-0.6.7",
+        ":cookie-0.5.1",
+        ":deepseq-1.4.8.1",
+        ":exceptions-0.10.7",
+        ":filepath-1.4.301.0",
+        ":ghc-prim-0.10.0",
+        ":http-types-0.12.4",
+        ":iproute-1.7.15",
+        ":mime-types-0.1.2.0",
+        ":network-3.2.7.0",
+        ":network-uri-2.6.4.2",
+        ":random-1.2.1.3",
+        ":stm-2.5.1.0",
+        ":streaming-commons-0.2.3.0",
+        ":text-2.0.2",
+        ":time-1.12.2",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# http-client-tls-0.3.6.4
+
+repo_package(
+    name = "http-client-tls-0.3.6.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "efe0a32d59c3a38ea35eb9c1b6e7beffa3592e39b2065a727cb84ccd654d16f3",
+            "size": 2135,
+        },
+        "name": "http-client-tls",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "7756006fee8ab924c521372e0f9d6705579016b9fab0b0312d1b9a335cfc18a3",
+            "size": 7954,
+            "type": "repo-tar",
+        },
+        "version": "0.3.6.4",
+    },
+)
+
+build(
+    name = "http-client-tls-0.3.6.4",
+    pkg_name = "http-client-tls",
+    pkg_version = "0.3.6.4",
+    component_name = "lib",
+    src = ":http-client-tls-0.3.6.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":containers-0.6.7",
+        ":crypton-1.0.4",
+        ":crypton-connection-0.4.4",
+        ":data-default-0.8.0.1",
+        ":exceptions-0.10.7",
+        ":http-client-0.7.19",
+        ":http-types-0.12.4",
+        ":memory-0.18.0",
+        ":network-3.2.7.0",
+        ":network-uri-2.6.4.2",
+        ":text-2.0.2",
+        ":tls-2.1.8",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# http-date-0.0.11
+
+repo_package(
+    name = "http-date-0.0.11-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "b278b07f880705e3b0b073206ad26954548b666d616733c9a6b5d50993f547d4",
+            "size": 1758,
+        },
+        "name": "http-date",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "32f923ac1ad9bdfeadce7c52a03c9ba6225ba60dc14137cb1cdf32ea84ccf4d3",
+            "size": 5351,
+            "type": "repo-tar",
+        },
+        "version": "0.0.11",
+    },
+)
+
+build(
+    name = "http-date-0.0.11",
+    pkg_name = "http-date",
+    pkg_version = "0.0.11",
+    component_name = "lib",
+    src = ":http-date-0.0.11-src",
+    flags = {},
+    deps = [
+        ":array-0.5.8.0",
+        ":attoparsec-0.14.4",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":time-1.12.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# http-semantics-0.3.0
+
+repo_package(
+    name = "http-semantics-0.3.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "7686c4a82dbe1b01b9a7f75bc25c45c82370612bde641f4ddd30d7a4c1205b40",
+            "size": 1504,
+        },
+        "name": "http-semantics",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "9ccee90bcbbfb29f30f7aed063c62edf0f3eb084ba63dbf9baffbd5db573714f",
+            "size": 14927,
+            "type": "repo-tar",
+        },
+        "version": "0.3.0",
+    },
+)
+
+build(
+    name = "http-semantics-0.3.0",
+    pkg_name = "http-semantics",
+    pkg_version = "0.3.0",
+    component_name = "lib",
+    src = ":http-semantics-0.3.0-src",
+    flags = {},
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":http-types-0.12.4",
+        ":network-3.2.7.0",
+        ":network-byte-order-0.1.7",
+        ":time-manager-0.2.2",
+        ":utf8-string-1.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# http-types-0.12.4
+
+repo_package(
+    name = "http-types-0.12.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "c8bdda528c9d74dea90effb30958fdacdb09b116c61a63b6f1b233ffea72b776",
+            "size": 2276,
+        },
+        "name": "http-types",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "4d4b1bb0cc817e5fef0c9c76c9647f69f4d300c45a105043493eff86381be549",
+            "size": 18707,
+            "type": "repo-tar",
+        },
+        "version": "0.12.4",
+    },
+)
+
+build(
+    name = "http-types-0.12.4",
+    pkg_name = "http-types",
+    pkg_version = "0.12.4",
+    component_name = "lib",
+    src = ":http-types-0.12.4-src",
+    flags = {},
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# http2-5.3.9
+
+repo_package(
+    name = "http2-5.3.9-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "c69ee7e27a4695ed1e379be094d5c22535b77e82e2571a44d4bc37f22027faf1",
+            "size": 10591,
+        },
+        "name": "http2",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "0ed31519dbd56a743c53cb24cb9a3fb3d014893b5dd1ad8c91c520f0e34f9b71",
+            "size": 5499718,
+            "type": "repo-tar",
+        },
+        "version": "5.3.9",
+    },
+)
+
+build(
+    name = "http2-5.3.9",
+    pkg_name = "http2",
+    pkg_version = "5.3.9",
+    component_name = "lib",
+    src = ":http2-5.3.9-src",
+    flags = {
+        "devel": False,
+        "h2spec": False,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":containers-0.6.7",
+        ":http-semantics-0.3.0",
+        ":http-types-0.12.4",
+        ":iproute-1.7.15",
+        ":network-3.2.7.0",
+        ":network-byte-order-0.1.7",
+        ":network-control-0.1.6",
+        ":stm-2.5.1.0",
+        ":time-manager-0.2.2",
+        ":unix-time-0.4.16",
+        ":utf8-string-1.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # indexed-traversable-0.1.4
 
 repo_package(
@@ -2778,6 +4193,46 @@ build(
         ":transformers-0.6.1.0",
         ":transformers-compat-0.7.2",
         ":unordered-containers-0.2.20",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# iproute-1.7.15
+
+repo_package(
+    name = "iproute-1.7.15-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "81ed5d5915467825e2381a8b2fabd7ce9b83c4209f4825bd15270b433cf52862",
+            "size": 1936,
+        },
+        "name": "iproute",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "18a331a7e0e6f9dc89a2da95577b0d76bd2690b8f832b72b46d6cc9b667b4ba5",
+            "size": 18033,
+            "type": "repo-tar",
+        },
+        "version": "1.7.15",
+    },
+)
+
+build(
+    name = "iproute-1.7.15",
+    pkg_name = "iproute",
+    pkg_version = "1.7.15",
+    component_name = "lib",
+    src = ":iproute-1.7.15-src",
+    flags = {},
+    deps = [
+        ":appar-0.1.8",
+        ":base-4.18.3.0",
+        ":byteorder-1.0.4",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":network-3.2.7.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3060,6 +4515,86 @@ cabal_simple_executable(
     visibility = ["PUBLIC"],
 )
 
+# memory-0.18.0
+
+repo_package(
+    name = "memory-0.18.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "9f4de967352f80b6f174c9a166f315393dde80b77d7b67e41268ae7dec0319f9",
+            "size": 4581,
+        },
+        "name": "memory",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "fd4eb6f638e24b81b4e6cdd68772a531726f2f67686c8969d3407d82f7862e3e",
+            "size": 41957,
+            "type": "repo-tar",
+        },
+        "version": "0.18.0",
+    },
+)
+
+build(
+    name = "memory-0.18.0",
+    pkg_name = "memory",
+    pkg_version = "0.18.0",
+    component_name = "lib",
+    src = ":memory-0.18.0-src",
+    flags = {
+        "support_bytestring": True,
+        "support_deepseq": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":basement-0.0.16",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+        ":ghc-prim-0.10.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# mime-types-0.1.2.0
+
+repo_package(
+    name = "mime-types-0.1.2.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "3ddd330c16da943651db37e237d44dc0593ef9b1a63d39e98a48811644615bf6",
+            "size": 862,
+        },
+        "name": "mime-types",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "013ae48a4c1726a4f91a64e882f3fe1fb903a7d4b8c14da51286fe5e4b974f61",
+            "size": 12044,
+            "type": "repo-tar",
+        },
+        "version": "0.1.2.0",
+    },
+)
+
+build(
+    name = "mime-types-0.1.2.0",
+    pkg_name = "mime-types",
+    pkg_version = "0.1.2.0",
+    component_name = "lib",
+    src = ":mime-types-0.1.2.0-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # monad-control-1.0.3.1
 
 repo_package(
@@ -3152,6 +4687,79 @@ build_legacy(
     visibility = ["PUBLIC"],
 )
 
+# network-byte-order-0.1.7
+
+repo_package(
+    name = "network-byte-order-0.1.7-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "3b6e875fe2f363817b157ecc9c45411ac84544bfa4a30364943e49e817db7fdf",
+            "size": 664,
+        },
+        "name": "network-byte-order",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "480ce0ad7f67364ec8d4ce8d815f463d9e4074e3789be22a5722cfdebed08679",
+            "size": 6402,
+            "type": "repo-tar",
+        },
+        "version": "0.1.7",
+    },
+)
+
+build(
+    name = "network-byte-order-0.1.7",
+    pkg_name = "network-byte-order",
+    pkg_version = "0.1.7",
+    component_name = "lib",
+    src = ":network-byte-order-0.1.7-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# network-control-0.1.6
+
+repo_package(
+    name = "network-control-0.1.6-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "ff8ff2cceb0b6c541ecd967974841609d06b459279d0862ef77b34b89a1de21a",
+            "size": 1255,
+        },
+        "name": "network-control",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "f4258aad1462015e741f1541425c14652d33faa305a6b9fe1fe7e8608da28fa1",
+            "size": 7775,
+            "type": "repo-tar",
+        },
+        "version": "0.1.6",
+    },
+)
+
+build(
+    name = "network-control-0.1.6",
+    pkg_name = "network-control",
+    pkg_version = "0.1.6",
+    component_name = "lib",
+    src = ":network-control-0.1.6-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":psqueues-0.2.8.1",
+        ":unix-time-0.4.16",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # network-uri-2.6.4.2
 
 repo_package(
@@ -3188,6 +4796,87 @@ build(
         ":template-haskell-2.20.0.0",
         ":th-compat-0.1.6",
     ],
+    visibility = ["PUBLIC"],
+)
+
+# old-locale-1.0.0.7
+
+repo_package(
+    name = "old-locale-1.0.0.7-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "fa998be2c7e00cd26a6e9075bea790caaf3932caa3e9497ad69bc20380dd6911",
+            "size": 1071,
+        },
+        "name": "old-locale",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "dbaf8bf6b888fb98845705079296a23c3f40ee2f449df7312f7f7f1de18d7b50",
+            "size": 3384,
+            "type": "repo-tar",
+        },
+        "version": "1.0.0.7",
+    },
+)
+
+build(
+    name = "old-locale-1.0.0.7",
+    pkg_name = "old-locale",
+    pkg_version = "1.0.0.7",
+    component_name = "lib",
+    src = ":old-locale-1.0.0.7-src",
+    flags = {},
+    deps = [":base-4.18.3.0"],
+    visibility = ["PUBLIC"],
+)
+
+# old-time-1.1.0.4
+
+repo_package(
+    name = "old-time-1.1.0.4-src",
+    package = {
+        "build-type": "Configure",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "6e3dfb5b1d7cb24ed7ea9bbca1153485ae38fa0534b0581886dd42eeedf82447",
+            "size": 1489,
+        },
+        "name": "old-time",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "1e22eb7f7b924a676f52e317917b3b5eeceee11c74ef4bc609c0bcec624c166f",
+            "size": 75542,
+            "type": "repo-tar",
+        },
+        "version": "1.1.0.4",
+    },
+)
+
+haskell_binary(
+    name = "old-time-1.1.0.4-setup",
+    srcs = {
+        "Main.hs": ":old-time-1.1.0.4-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "old-time-1.1.0.4",
+    pkg_name = "old-time",
+    pkg_version = "1.1.0.4",
+    setup = ":old-time-1.1.0.4-setup",
+    src = ":old-time-1.1.0.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":old-locale-1.0.0.7",
+    ],
+    exec_deps = [":hsc2hs-0.68.10-exe-hsc2hs"],
     visibility = ["PUBLIC"],
 )
 
@@ -3308,6 +4997,44 @@ build(
         ":containers-0.6.7",
         ":deepseq-1.4.8.1",
         ":ghc-prim-0.10.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# pem-0.2.4
+
+repo_package(
+    name = "pem-0.2.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "cc8e62118b783e284dc0fa032f54fe386a3861a948ec88079370a433c103a705",
+            "size": 1441,
+        },
+        "name": "pem",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "770c4c1b9cd24b3db7f511f8a48404a0d098999e28573c3743a8a296bb96f8d4",
+            "size": 4717,
+            "type": "repo-tar",
+        },
+        "version": "0.2.4",
+    },
+)
+
+build(
+    name = "pem-0.2.4",
+    pkg_name = "pem",
+    pkg_version = "0.2.4",
+    component_name = "lib",
+    src = ":pem-0.2.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":basement-0.0.16",
+        ":bytestring-0.11.5.4",
+        ":memory-0.18.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3469,6 +5196,44 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# psqueues-0.2.8.1
+
+repo_package(
+    name = "psqueues-0.2.8.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "75be4406bfabd6300d0ad5acdca72762b1ca3eb78e204d82e6ba5517adf96b3b",
+            "size": 4887,
+        },
+        "name": "psqueues",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "cb7e102f09e373b4a7be52bfbc9625d265c7216d05fe04c36b7ad684ed213f77",
+            "size": 27584,
+            "type": "repo-tar",
+        },
+        "version": "0.2.8.1",
+    },
+)
+
+build(
+    name = "psqueues-0.2.8.1",
+    pkg_name = "psqueues",
+    pkg_version = "0.2.8.1",
+    component_name = "lib",
+    src = ":psqueues-0.2.8.1-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":deepseq-1.4.8.1",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # quickcheck-io-0.2.0
 
 repo_package(
@@ -3541,6 +5306,43 @@ build(
         ":deepseq-1.4.8.1",
         ":mtl-2.3.1",
         ":splitmix-0.1.1",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# recv-0.1.0
+
+repo_package(
+    name = "recv-0.1.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "04058c90ed3d2821b92e589dd3428f5a6e9d49ab405296dda3583304cb0b9bb3",
+            "size": 1755,
+        },
+        "name": "recv",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "f664905cffb44b7f9cba604cd75bd69011a666ba06bccbcb7f3fae0cd4f14d5b",
+            "size": 5158,
+            "type": "repo-tar",
+        },
+        "version": "0.1.0",
+    },
+)
+
+build(
+    name = "recv-0.1.0",
+    pkg_name = "recv",
+    pkg_version = "0.1.0",
+    component_name = "lib",
+    src = ":recv-0.1.0-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":network-3.2.7.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3777,6 +5579,137 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# serialise-0.2.6.1
+
+repo_package(
+    name = "serialise-0.2.6.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 4,
+            "sha256": "70495f88c1633bd432847b1d767e9e6832779f85b9d012b01a0a14f2cacbecc6",
+            "size": 8823,
+        },
+        "name": "serialise",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "63949799ffd10675ef70ea701c1eb63e618629b3b2f7b25f07c5a966e24e77f4",
+            "size": 75106,
+            "type": "repo-tar",
+        },
+        "version": "0.2.6.1",
+    },
+)
+
+build(
+    name = "serialise-0.2.6.1",
+    pkg_name = "serialise",
+    pkg_version = "0.2.6.1",
+    component_name = "lib",
+    src = ":serialise-0.2.6.1-src",
+    flags = {
+        "newtime15": True,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":cborg-0.2.10.0",
+        ":containers-0.6.7",
+        ":ghc-prim-0.10.0",
+        ":half-0.3.2",
+        ":hashable-1.4.7.0",
+        ":primitive-0.8.0.0",
+        ":strict-0.5.1",
+        ":text-2.0.2",
+        ":these-1.2.1",
+        ":time-1.12.2",
+        ":unordered-containers-0.2.20",
+        ":vector-0.13.2.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# simple-sendfile-0.2.32
+
+repo_package(
+    name = "simple-sendfile-0.2.32-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "133f419b9b6b8a4db8541f381c20b8dfca962a59e82ba203e66d6bef41cf8ea4",
+            "size": 2592,
+        },
+        "name": "simple-sendfile",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "9f28d0a67ac3d956d2dd78eb19ea922c0a9192bbbeeeead20d39f561636828a3",
+            "size": 343565,
+            "type": "repo-tar",
+        },
+        "version": "0.2.32",
+    },
+)
+
+build(
+    name = "simple-sendfile-0.2.32",
+    pkg_name = "simple-sendfile",
+    pkg_version = "0.2.32",
+    component_name = "lib",
+    src = ":simple-sendfile-0.2.32-src",
+    flags = {
+        "allow-bsd": True,
+        "fallback": False,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":network-3.2.7.0",
+        ":unix-2.8.6.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# socks-0.6.1
+
+repo_package(
+    name = "socks-0.6.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "ac190808eea704672df18f702e8f2ad0b7a4d0af528e95ee55ea6ee0be672e2a",
+            "size": 1258,
+        },
+        "name": "socks",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "734447558bb061ce768f53a0df1f2401902c6bee396cc96ce627edd986ef6a73",
+            "size": 9759,
+            "type": "repo-tar",
+        },
+        "version": "0.6.1",
+    },
+)
+
+build(
+    name = "socks-0.6.1",
+    pkg_name = "socks",
+    pkg_version = "0.6.1",
+    component_name = "lib",
+    src = ":socks-0.6.1-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":basement-0.0.16",
+        ":bytestring-0.11.5.4",
+        ":cereal-0.5.8.3",
+        ":network-3.2.7.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # some-1.0.6
 
 repo_package(
@@ -3883,6 +5816,55 @@ build(
     deps = [
         ":base-4.18.3.0",
         ":deepseq-1.4.8.1",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# streaming-commons-0.2.3.0
+
+repo_package(
+    name = "streaming-commons-0.2.3.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "68d5f3daa6caa7cc7d659094a03d543021df5ec4737b67e63ffa4541ac0aae10",
+            "size": 4841,
+        },
+        "name": "streaming-commons",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "26384af91f5ab9470b0bbdd0ce2172db43fc79730b7c5a3405d89c3663eb1e57",
+            "size": 37874,
+            "type": "repo-tar",
+        },
+        "version": "0.2.3.0",
+    },
+)
+
+build(
+    name = "streaming-commons-0.2.3.0",
+    pkg_name = "streaming-commons",
+    pkg_version = "0.2.3.0",
+    component_name = "lib",
+    src = ":streaming-commons-0.2.3.0-src",
+    flags = {
+        "use-bytestring-builder": False,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":directory-1.3.8.5",
+        ":network-3.2.7.0",
+        ":process-1.6.19.0",
+        ":random-1.2.1.3",
+        ":stm-2.5.1.0",
+        ":text-2.0.2",
+        ":transformers-0.6.1.0",
+        ":unix-2.8.6.0",
+        ":zlib-0.7.1.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -4500,6 +6482,372 @@ cabal_simple_executable(
     visibility = ["PUBLIC"],
 )
 
+# thrift-cpp-channel-0.1.0.0, in cpp-channel
+
+cabal_package(
+    name = "thrift-cpp-channel-0.1.0.0-package",
+    package_name = "thrift-cpp-channel",
+    version = "0.1.0.0",
+    srcs = glob(
+        ["cpp-channel/**"],
+        exclude = ["cpp-channel/BUCK", "cpp-channel/dist-newstyle/**", "cpp-channel/if/gen-cpp2/**"],
+    ),
+    root = "cpp-channel",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Thrift channel implementation based on fbthrift",
+    description = "Support for building client and server applications that\ncommunicate using the Thrift protocols over channels\nimplemented in C++ with the fbthrift infrastructure.\n.\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_source_files = [
+        "cpp/HsChannel.h",
+        "if/gen-cpp2/*.h",
+        "if/gen-cpp2/*.cpp",
+        "if/gen-cpp2/*.tcc",
+        "test/if/gen-cpp2/*.h",
+        "test/if/gen-cpp2/*.cpp",
+        "test/if/gen-cpp2/*.tcc",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-cpp-channel-0.1.0.0",
+    package = ":thrift-cpp-channel-0.1.0.0-package",
+    exposed_modules = [
+        "Thrift.Channel.Lib.CppChannel",
+        "Thrift.Channel.Lib.HeaderChannel",
+        "Thrift.Channel.HeaderChannel",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    cxx_options = [
+        "-std=c++20",
+        "-fcoroutines",
+        "-march=haswell",
+    ],
+    hsc2hs_options = [
+        "--cc=g++",
+        "--lflag=-lstdc++",
+        "--cflag=-D__HSC2HS__=1",
+        "--lflag=-lboost_context",
+        "--lflag=-latomic",
+        "--cflag=-std=c++20",
+    ],
+    cxx_sources = [
+        "cpp/HeaderChannel.cpp",
+        "cpp/HsChannel.cpp",
+        "if/gen-cpp2/RpcOptions_constants.cpp",
+        "if/gen-cpp2/RpcOptions_data.cpp",
+        "if/gen-cpp2/RpcOptions_metadata.cpp",
+        "if/gen-cpp2/RpcOptions_types.cpp",
+        "if/gen-cpp2/RpcOptions_types_binary.cpp",
+        "if/gen-cpp2/RpcOptions_types_compact.cpp",
+        "if/gen-cpp2/RpcOptions_types_serialization.cpp",
+    ],
+    include_dirs = ["."],
+    extra_libraries = [
+        "stdc++",
+        "boost_context",
+        "atomic",
+    ],
+    pkgconfig_depends = [
+        "fmt",
+        "openssl",
+        "libsodium",
+        "libzstd",
+        "zlib",
+    ],
+    build_depends = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":fb-util-0.2.0.1",
+        ":text-2.0.2",
+        ":text-show-3.10.5",
+        ":thrift-lib-0.2.0.0",
+    ],
+    build_tool_depends = [":hsc2hs-0.68.10-exe-hsc2hs"],
+    cxx_deps = [
+        "//build/buck/deps/fmt:fmt",
+        "//build/buck/deps/system:openssl",
+        "//build/buck/deps/system:libsodium",
+        "//build/buck/deps/system:zstd",
+        "//build/buck/deps/system:zlib",
+        "//build/buck/deps/fbthrift:fbthrift",
+        "//build/buck/deps/wangle:wangle",
+        "//build/buck/deps/fizz:fizz",
+    ],
+    generated = {
+        "if/gen-cpp2": "//build/buck/thrift:thrift-cpp-channel",
+    },
+    visibility = ["PUBLIC"],
+)
+
+# thrift-haxl-0.2.0.0, in haxl
+
+cabal_package(
+    name = "thrift-haxl-0.2.0.0-package",
+    package_name = "thrift-haxl",
+    version = "0.2.0.0",
+    srcs = glob(
+        ["haxl/**"],
+        exclude = ["haxl/BUCK", "haxl/dist-newstyle/**"],
+    ),
+    root = "haxl",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Support for using Haxl with Thrift services",
+    description = "Support for making Thrift requests using the Haxl concurrency\nframework.\n.\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_doc_files = ["CHANGELOG.md"],
+)
+
+cabal_simple_library(
+    name = "thrift-haxl-0.2.0.0",
+    package = ":thrift-haxl-0.2.0.0-package",
+    exposed_modules = ["Haxl.DataSource.Thrift"],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":base-4.18.3.0",
+        ":hashable-1.4.7.0",
+        ":haxl-2.5.1.1",
+        ":mtl-2.3.1",
+        ":text-2.0.2",
+        ":text-show-3.10.5",
+        ":thrift-lib-0.2.0.0",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# thrift-http-0.3.0.0, in http
+
+cabal_package(
+    name = "thrift-http-0.3.0.0-package",
+    package_name = "thrift-http",
+    version = "0.3.0.0",
+    srcs = glob(
+        ["http/**"],
+        exclude = ["http/BUCK", "http/dist-newstyle/**", "http/test/gen-hs2/**"],
+    ),
+    root = "http",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Support for Thrift-over-HTTP server and client",
+    description = "Support for building servers and clients that communicate\nusing Thrift over an HTTP transport. Uses WAI and Warp as\nthe server-side HTTP implementation, and http-client for\nthe client-side implementation.\n\nThis transport is only compatible with itself. In particular, it\nis *not* compatible with fbthrift or apache-thrift clients and\nservers.\n\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-http-0.3.0.0",
+    package = ":thrift-http-0.3.0.0-package",
+    exposed_modules = [
+        "Thrift.Server.HTTP",
+        "Thrift.Channel.HTTP",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":fb-util-0.2.0.1",
+        ":http-client-0.7.19",
+        ":http-client-tls-0.3.6.4",
+        ":http-types-0.12.4",
+        ":network-3.2.7.0",
+        ":streaming-commons-0.2.3.0",
+        ":text-2.0.2",
+        ":thrift-lib-0.2.0.0",
+        ":utf8-string-1.0.2",
+        ":wai-3.2.4",
+        ":warp-3.4.7",
+    ],
+    generated = {
+        "test/gen-hs2": "//build/buck/thrift:thrift-http-test",
+    },
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-http-0.3.0.0-lib-test-lib",
+    package = ":thrift-http-0.3.0.0-package",
+    library_name = "test-lib",
+    exposed_modules = [
+        "CalculatorHandler",
+        "EchoHandler",
+        "Echoer.Echoer.Client",
+        "Echoer.Echoer.Service",
+        "Echoer.Types",
+        "Math.Adder.Client",
+        "Math.Adder.Service",
+        "Math.Calculator.Client",
+        "Math.Calculator.Service",
+        "Math.Types",
+        "Facebook.Thrift.Annotation.Thrift.Thrift.Types",
+        "Scope.Types",
+    ],
+    hs_source_dirs = [
+        "test/common",
+        "test/gen-hs2",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":HUnit-1.6.2.0",
+        ":STMonadTrans-0.4.8",
+        ":aeson-2.2.3.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":data-default-0.8.0.1",
+        ":deepseq-1.4.8.1",
+        ":fb-stubs-0.1.0.1",
+        ":fb-util-0.2.0.1",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":hspec-2.11.12",
+        ":hspec-contrib-0.5.2",
+        ":text-2.0.2",
+        ":thrift-lib-0.2.0.0",
+        ":thrift-lib-0.2.0.0-lib-test-helpers",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+    ],
+    generated = {
+        "test/gen-hs2": "//build/buck/thrift:thrift-http-test",
+    },
+)
+
 # thrift-lib-0.2.0.0, in lib
 
 cabal_package(
@@ -4508,7 +6856,7 @@ cabal_package(
     version = "0.2.0.0",
     srcs = glob(
         ["lib/**"],
-        exclude = ["lib/BUCK", "lib/dist-newstyle/**", "lib/gen-hs2/**"],
+        exclude = ["lib/BUCK", "lib/dist-newstyle/**", "lib/gen-hs2/**", "lib/test/gen-hs2/**"],
     ),
     root = "lib",
     cabal_version = "3.6",
@@ -4623,6 +6971,7 @@ cabal_simple_library(
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
     generated = {
         "gen-hs2": "//build/buck/thrift:thrift-lib",
+        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
     },
     visibility = ["PUBLIC"],
 )
@@ -4674,6 +7023,7 @@ cabal_simple_library(
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
     generated = {
         "gen-hs2": "//build/buck/thrift:thrift-lib",
+        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
     },
     visibility = ["PUBLIC"],
 )
@@ -4754,7 +7104,233 @@ cabal_simple_library(
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
     generated = {
         "gen-hs2": "//build/buck/thrift:thrift-lib",
+        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
     },
+)
+
+# thrift-server-0.1.0.1, in server
+
+cabal_package(
+    name = "thrift-server-0.1.0.1-package",
+    package_name = "thrift-server",
+    version = "0.1.0.1",
+    srcs = glob(
+        ["server/**"],
+        exclude = ["server/BUCK", "server/dist-newstyle/**", "server/test/gen-hs2/**"],
+    ),
+    root = "server",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Support for creating Thrift servers in Haskell",
+    description = "Support for building server applications that\ncommunicate using the Thrift protocols.\n.\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_source_files = [
+        "CHANGELOG.md",
+        "cpp/*.h",
+        "cpp/*.cpp",
+        "test/if/*.thrift",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-server-0.1.0.1",
+    package = ":thrift-server-0.1.0.1-package",
+    exposed_modules = [
+        "Thrift.Server.Types",
+        "Thrift.Server.ProcessorCallback",
+        "Thrift.Server.CppServer",
+        "Thrift.Server.ClientId",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    cxx_options = [
+        "-std=c++20",
+        "-fcoroutines",
+        "-march=haswell",
+    ],
+    hsc2hs_options = [
+        "--cc=g++",
+        "--lflag=-lstdc++",
+        "--cflag=-D__HSC2HS__=1",
+        "--cflag=-std=c++20",
+    ],
+    cxx_sources = [
+        "cpp/CppServer.cpp",
+        "cpp/HaskellProcessor.cpp",
+    ],
+    include_dirs = ["."],
+    extra_libraries = ["boost_context"],
+    build_depends = [
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":fb-util-0.2.0.1",
+        ":text-2.0.2",
+        ":thrift-cpp-channel-0.1.0.0",
+        ":thrift-lib-0.2.0.0",
+        ":utf8-string-1.0.2",
+    ],
+    build_tool_depends = [":hsc2hs-0.68.10-exe-hsc2hs"],
+    generated = {
+        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
+    },
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_library(
+    name = "thrift-server-0.1.0.1-lib-test-lib",
+    package = ":thrift-server-0.1.0.1-package",
+    library_name = "test-lib",
+    exposed_modules = [
+        "CalculatorHandler",
+        "EchoHandler",
+        "Echoer.Echoer.Client",
+        "Echoer.Echoer.Service",
+        "Echoer.Types",
+        "Math.Adder.Client",
+        "Math.Adder.Service",
+        "Math.Calculator.Client",
+        "Math.Calculator.Service",
+        "Math.Types",
+        "HashMap.HashMapService.Client",
+        "HashMap.HashMapService.Service",
+        "HashMap.Types",
+        "Facebook.Thrift.Annotation.Thrift.Thrift.Types",
+        "Scope.Types",
+    ],
+    hs_source_dirs = [
+        "test/common",
+        "test/gen-hs2",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    cxx_options = [
+        "-std=c++20",
+        "-fcoroutines",
+        "-march=haswell",
+    ],
+    build_depends = [
+        ":HUnit-1.6.2.0",
+        ":STMonadTrans-0.4.8",
+        ":aeson-2.2.3.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":data-default-0.8.0.1",
+        ":deepseq-1.4.8.1",
+        ":fb-stubs-0.1.0.1",
+        ":fb-util-0.2.0.1",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":hspec-2.11.12",
+        ":hspec-contrib-0.5.2",
+        ":text-2.0.2",
+        ":thrift-cpp-channel-0.1.0.0",
+        ":thrift-lib-0.2.0.0",
+        ":thrift-lib-0.2.0.0-lib-test-helpers",
+        ":thrift-server-0.1.0.1",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+    ],
+    generated = {
+        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
+    },
+)
+
+# thrift-tests-0.1.0.0, in tests
+
+cabal_package(
+    name = "thrift-tests-0.1.0.0-package",
+    package_name = "thrift-tests",
+    version = "0.1.0.0",
+    srcs = glob(
+        ["tests/**"],
+        exclude = ["tests/BUCK", "tests/dist-newstyle/**"],
+    ),
+    root = "tests",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "Tests for Haskell Thrift",
+    description = "Tests for Haskell Thrift.\n.\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_source_files = [
+        "cpp/*.h",
+        "cpp/*.cpp",
+        "if/*.thrift",
+        "if/gen-cpp2/*.h",
+        "if/gen-cpp2/*.cpp",
+        "if/gen-cpp2/*.tcc",
+        "thrift/**/*.thrift",
+    ],
+    visibility = ["PUBLIC"],
 )
 
 # time-compat-1.9.8
@@ -4793,6 +7369,98 @@ build(
         ":hashable-1.4.7.0",
         ":template-haskell-2.20.0.0",
         ":time-1.12.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# time-manager-0.2.2
+
+repo_package(
+    name = "time-manager-0.2.2-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "fa4b1e79149c761b81ee141df43689e1e66c8181044a7ee738bb9f4c88dceb7c",
+            "size": 978,
+        },
+        "name": "time-manager",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "d605d046f9c7e416e27d5e150d096a19556f14fdb317c47a1925179245cda9ea",
+            "size": 5814,
+            "type": "repo-tar",
+        },
+        "version": "0.2.2",
+    },
+)
+
+build(
+    name = "time-manager-0.2.2",
+    pkg_name = "time-manager",
+    pkg_version = "0.2.2",
+    component_name = "lib",
+    src = ":time-manager-0.2.2-src",
+    flags = {},
+    deps = [
+        ":auto-update-0.2.6",
+        ":base-4.18.3.0",
+        ":containers-0.6.7",
+        ":stm-2.5.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# tls-2.1.8
+
+repo_package(
+    name = "tls-2.1.8-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "69b583c77cc25d8efd62fd48462f469a7c66db551013db753e4062e3b56576f9",
+            "size": 6223,
+        },
+        "name": "tls",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "5843f79b96c12d9e4ea57dc9902456d9fd6d52c509bee38a0a6a5323c8f04db3",
+            "size": 172991,
+            "type": "repo-tar",
+        },
+        "version": "2.1.8",
+    },
+)
+
+build(
+    name = "tls-2.1.8",
+    pkg_name = "tls",
+    pkg_version = "2.1.8",
+    component_name = "lib",
+    src = ":tls-2.1.8-src",
+    flags = {
+        "devel": False,
+    },
+    deps = [
+        ":asn1-encoding-0.9.6",
+        ":asn1-types-0.3.4",
+        ":base-4.18.3.0",
+        ":base16-bytestring-1.0.2.0",
+        ":bytestring-0.11.5.4",
+        ":cereal-0.5.8.3",
+        ":crypton-1.0.4",
+        ":crypton-x509-1.7.7",
+        ":crypton-x509-store-1.6.10",
+        ":crypton-x509-validation-1.6.14",
+        ":data-default-0.8.0.1",
+        ":memory-0.18.0",
+        ":mtl-2.3.1",
+        ":network-3.2.7.0",
+        ":serialise-0.2.6.1",
+        ":transformers-0.6.1.0",
+        ":unix-time-0.4.16",
+        ":zlib-0.7.1.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -4993,6 +7661,56 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# unix-time-0.4.16
+
+repo_package(
+    name = "unix-time-0.4.16-src",
+    package = {
+        "build-type": "Configure",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "f6632716ba00c3face87818446c6e5cc53b2dd1c866b050598f8c6b73c9e48ba",
+            "size": 2027,
+        },
+        "name": "unix-time",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "ace2a7126d7344feb3221680c556de7f28a969fb287d49bd4a2d7df18fe638e9",
+            "size": 52594,
+            "type": "repo-tar",
+        },
+        "version": "0.4.16",
+    },
+)
+
+haskell_binary(
+    name = "unix-time-0.4.16-setup",
+    srcs = {
+        "Main.hs": ":unix-time-0.4.16-src[Setup.hs]",
+    },
+    toolchain_libs = [
+        "base",
+        "Cabal",
+    ],
+)
+
+build_legacy(
+    name = "unix-time-0.4.16",
+    pkg_name = "unix-time",
+    pkg_version = "0.4.16",
+    setup = ":unix-time-0.4.16-setup",
+    src = ":unix-time-0.4.16-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":binary-0.8.9.1",
+        ":bytestring-0.11.5.4",
+        ":old-time-1.1.0.4",
+    ],
+    exec_deps = [":hsc2hs-0.68.10-exe-hsc2hs"],
+    visibility = ["PUBLIC"],
+)
+
 # unordered-containers-0.2.20
 
 repo_package(
@@ -5029,6 +7747,42 @@ build(
         ":deepseq-1.4.8.1",
         ":hashable-1.4.7.0",
         ":template-haskell-2.20.0.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# utf8-string-1.0.2
+
+repo_package(
+    name = "utf8-string-1.0.2-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "79416292186feeaf1f60e49ac5a1ffae9bf1b120e040a74bf0e81ca7f1d31d3f",
+            "size": 1538,
+        },
+        "name": "utf8-string",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "ee48deada7600370728c4156cb002441de770d0121ae33a68139a9ed9c19b09a",
+            "size": 10726,
+            "type": "repo-tar",
+        },
+        "version": "1.0.2",
+    },
+)
+
+build(
+    name = "utf8-string-1.0.2",
+    pkg_name = "utf8-string",
+    pkg_version = "1.0.2",
+    component_name = "lib",
+    src = ":utf8-string-1.0.2-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
     ],
     visibility = ["PUBLIC"],
 )
@@ -5071,6 +7825,46 @@ build(
         ":random-1.2.1.3",
         ":template-haskell-2.20.0.0",
         ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# vault-0.3.1.5
+
+repo_package(
+    name = "vault-0.3.1.5-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 10,
+            "sha256": "212cc25cd6730a565def636d39fe3fbfeb01adee91617a264b13e28bc04adc0e",
+            "size": 2210,
+        },
+        "name": "vault",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "ac2a6b6adf58598c5c8faa931ae961a8a2aa50ddb2f0f7a2044ff6e8c3d433a0",
+            "size": 5431,
+            "type": "repo-tar",
+        },
+        "version": "0.3.1.5",
+    },
+)
+
+build(
+    name = "vault-0.3.1.5",
+    pkg_name = "vault",
+    pkg_version = "0.3.1.5",
+    component_name = "lib",
+    src = ":vault-0.3.1.5-src",
+    flags = {
+        "useghc": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":containers-0.6.7",
+        ":hashable-1.4.7.0",
+        ":unordered-containers-0.2.20",
     ],
     visibility = ["PUBLIC"],
 )
@@ -5189,6 +7983,111 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# wai-3.2.4
+
+repo_package(
+    name = "wai-3.2.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "e14fde953183f9db8c10da79b44a2b24d241c1203426c5636995069e2dacb1fe",
+            "size": 1776,
+        },
+        "name": "wai",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "a6088f847d886d7c767092d170c03c7690d197eb3189d7cc67dbaaab33bf6d94",
+            "size": 13302,
+            "type": "repo-tar",
+        },
+        "version": "3.2.4",
+    },
+)
+
+build(
+    name = "wai-3.2.4",
+    pkg_name = "wai",
+    pkg_version = "3.2.4",
+    component_name = "lib",
+    src = ":wai-3.2.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":http-types-0.12.4",
+        ":network-3.2.7.0",
+        ":text-2.0.2",
+        ":vault-0.3.1.5",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# warp-3.4.7
+
+repo_package(
+    name = "warp-3.4.7-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "a794eadb710fddeeab0a3d07e048366c720736d254dd63a04e2f5c70176ff196",
+            "size": 9176,
+        },
+        "name": "warp",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "facc035c77e90cd67cec15eeea8a760e1bdedcd3bde5e65f3a96e348b1f513e8",
+            "size": 68905,
+            "type": "repo-tar",
+        },
+        "version": "3.4.7",
+    },
+)
+
+build(
+    name = "warp-3.4.7",
+    pkg_name = "warp",
+    pkg_version = "3.4.7",
+    component_name = "lib",
+    src = ":warp-3.4.7-src",
+    flags = {
+        "allow-sendfilefd": True,
+        "network-bytestring": False,
+        "warp-debug": False,
+        "x509": True,
+    },
+    deps = [
+        ":array-0.5.8.0",
+        ":async-2.2.5",
+        ":auto-update-0.2.6",
+        ":base-4.18.3.0",
+        ":bsb-http-chunked-0.0.0.4",
+        ":bytestring-0.11.5.4",
+        ":case-insensitive-1.2.1.0",
+        ":containers-0.6.7",
+        ":crypton-x509-1.7.7",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":http-date-0.0.11",
+        ":http-types-0.12.4",
+        ":http2-5.3.9",
+        ":iproute-1.7.15",
+        ":network-3.2.7.0",
+        ":recv-0.1.0",
+        ":simple-sendfile-0.2.32",
+        ":stm-2.5.1.0",
+        ":streaming-commons-0.2.3.0",
+        ":text-2.0.2",
+        ":time-manager-0.2.2",
+        ":unix-2.8.6.0",
+        ":vault-0.3.1.5",
+        ":wai-3.2.4",
+        ":word8-0.1.3",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # witherable-0.5
 
 repo_package(
@@ -5262,6 +8161,47 @@ build(
     src = ":word8-0.1.3-src",
     flags = {},
     deps = [":base-4.18.3.0"],
+    visibility = ["PUBLIC"],
+)
+
+# zlib-0.7.1.0
+
+repo_package(
+    name = "zlib-0.7.1.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 2,
+            "sha256": "85e64a75c0b490506a7edaa2d54950c668e66b65758bb08bb14cd31faf53a206",
+            "size": 5357,
+        },
+        "name": "zlib",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "6edd38b6b81df8d274952aa85affa6968ae86b2231e1d429ce8bc9083e6a55bc",
+            "size": 29318,
+            "type": "repo-tar",
+        },
+        "version": "0.7.1.0",
+    },
+)
+
+build(
+    name = "zlib-0.7.1.0",
+    pkg_name = "zlib",
+    pkg_version = "0.7.1.0",
+    component_name = "lib",
+    src = ":zlib-0.7.1.0-src",
+    flags = {
+        "bundled-c-zlib": False,
+        "non-blocking-ffi": True,
+        "pkg-config": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+    ],
+    exec_deps = [":hsc2hs-0.68.10-exe-hsc2hs"],
     visibility = ["PUBLIC"],
 )
 
