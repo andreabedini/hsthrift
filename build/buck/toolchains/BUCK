@@ -16,6 +16,9 @@ system_cxx_toolchain(
     compiler = "gcc",
     compiler_type = "gcc",
     cxx_compiler = "g++",
+    # Every static library before the ones it depends on, which preorder
+    # (the default) does not ensure: wangle and mvfst need fizz.
+    link_ordering = "topological",
     linker = "g++",
     c_flags = select({
         "config//cpu:x86_64": ["-march=haswell"],

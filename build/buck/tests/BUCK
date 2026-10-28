@@ -12,3 +12,15 @@ sh_test(
     name = "folly_smoke-test",
     test = ":folly_smoke",
 )
+
+cxx_binary(
+    name = "fbthrift_smoke",
+    srcs = ["fbthrift_smoke.cpp"],
+    compiler_flags = ["-std=c++20"],
+    deps = ["//build/buck/deps/fbthrift:fbthrift"],
+)
+
+sh_test(
+    name = "fbthrift_smoke-test",
+    test = ":fbthrift_smoke",
+)

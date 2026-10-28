@@ -19,29 +19,21 @@ getdeps_project(
     defines = {
         "CMAKE_INSTALL_RPATH_USE_LINK_PATH": "ON",
         "THRIFT_TESTS": "OFF",
-        "THRIFT_RPC": "OFF",
         "THRIFT_BENCHMARKS": "OFF",
         "BUILD_EXAMPLES": "OFF",
         "BUILD_TESTS": "OFF",
         "BOOST_LINK_STATIC": "OFF",
     },
+    job_weight_mib = 3072,
     deps = [
+        "//build/buck/deps/fizz:fizz-build",
         "//build/buck/deps/fmt:fmt-build",
         "//build/buck/deps/folly:folly-build",
+        "//build/buck/deps/mvfst:mvfst-build",
+        "//build/buck/deps/wangle:wangle-build",
     ],
-    libraries = [
-        "thriftcpp2",
-        "thriftmetadata",
-        "thriftprotocol",
-        "thrifttyperep",
-        "thriftanyrep",
-        "thrifttype",
-        "transport",
-        "rpcmetadata",
-        "concurrency",
-        "thrift-core",
-        "async",
-    ],
+    libraries = [],
+    merged_library = "fbthrift",
     visibility = [
         "PUBLIC",
     ],
@@ -49,146 +41,20 @@ getdeps_project(
 
 prebuilt_cxx_library(
     name = "fbthrift",
-    static_lib = ":fbthrift-build[libthriftcpp2]",
-    static_pic_lib = ":fbthrift-build[libthriftcpp2]",
+    static_lib = ":fbthrift-build[libfbthrift]",
+    static_pic_lib = ":fbthrift-build[libfbthrift]",
     header_dirs = [
         ":fbthrift-build[include]",
     ],
     preferred_linkage = "static",
     exported_deps = [
-        ":fbthrift-thriftmetadata",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thriftmetadata",
-    static_lib = ":fbthrift-build[libthriftmetadata]",
-    static_pic_lib = ":fbthrift-build[libthriftmetadata]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-thriftprotocol",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thriftprotocol",
-    static_lib = ":fbthrift-build[libthriftprotocol]",
-    static_pic_lib = ":fbthrift-build[libthriftprotocol]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-thrifttyperep",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thrifttyperep",
-    static_lib = ":fbthrift-build[libthrifttyperep]",
-    static_pic_lib = ":fbthrift-build[libthrifttyperep]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-thriftanyrep",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thriftanyrep",
-    static_lib = ":fbthrift-build[libthriftanyrep]",
-    static_pic_lib = ":fbthrift-build[libthriftanyrep]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-thrifttype",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thrifttype",
-    static_lib = ":fbthrift-build[libthrifttype]",
-    static_pic_lib = ":fbthrift-build[libthrifttype]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-transport",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-transport",
-    static_lib = ":fbthrift-build[libtransport]",
-    static_pic_lib = ":fbthrift-build[libtransport]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-rpcmetadata",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-rpcmetadata",
-    static_lib = ":fbthrift-build[librpcmetadata]",
-    static_pic_lib = ":fbthrift-build[librpcmetadata]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-concurrency",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-concurrency",
-    static_lib = ":fbthrift-build[libconcurrency]",
-    static_pic_lib = ":fbthrift-build[libconcurrency]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-thrift-core",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-thrift-core",
-    static_lib = ":fbthrift-build[libthrift-core]",
-    static_pic_lib = ":fbthrift-build[libthrift-core]",
-    preferred_linkage = "static",
-    exported_deps = [
-        ":fbthrift-async",
-    ],
-    visibility = [
-        "PUBLIC",
-    ],
-)
-
-prebuilt_cxx_library(
-    name = "fbthrift-async",
-    static_lib = ":fbthrift-build[libasync]",
-    static_pic_lib = ":fbthrift-build[libasync]",
-    preferred_linkage = "static",
-    exported_deps = [
+        "//build/buck/deps/fizz:fizz",
         "//build/buck/deps/fmt:fmt",
         "//build/buck/deps/folly:folly",
         "//build/buck/deps/system:googletest",
+        "//build/buck/deps/system:libsodium",
+        "//build/buck/deps/mvfst:mvfst",
+        "//build/buck/deps/wangle:wangle",
         "//build/buck/deps/system:xxhash",
         "//build/buck/deps/system:zstd",
     ],

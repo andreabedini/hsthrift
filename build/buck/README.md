@@ -26,10 +26,22 @@ or in `manifests/` for the ones getdeps does not have). It holds:
 Libraries are static and position-independent. Dependencies that getdeps
 takes from the distribution are in `deps/system/BUCK`, as linker flags.
 
-Build folly and run a program using it:
+Build them and run programs using folly and fbthrift (which pulls in
+wangle, fizz and mvfst):
 
-    buck2 build //build/buck/deps/folly:folly
-    buck2 test //build/buck/tests:folly_smoke-test
+    buck2 build //build/buck/deps/fbthrift:fbthrift
+    buck2 test //build/buck/tests/...
+
+These are big builds. Each `getdeps_project` action takes all of Buck2's
+local slots, so only one runs at a time, and runs as many jobs as half the
+memory available allows for the manifest's `job_weight_mib`; each of its
+processes is limited to ten times that much virtual memory (see
+`build_project.py`). A cap on everything the daemon runs is better still,
+with Buck2's resource control (systemd) in `.buckconfig.local`:
+
+    [buck2_resource_control]
+      status = if_available
+      memory_max = 17179869184
 
 The builds use the compilers, cmake and ninja in `PATH`, and system
 packages for the dependencies in `deps/system/BUCK`. On Fedora these are
@@ -53,7 +65,14 @@ every GitHub archive. Delete an entry to update it.
 - liburing is built from source: folly uses it whenever `<liburing.h>`
   exists, and needs 2.15 or later (see `manifests/liburing`).
 - Static rather than shared libraries (`build.sh` asks getdeps for shared
-  ones).
+  ones). Where a project installs an archive for each component and none
+  with all of them (fbthrift), they are merged into one
+  (`merge_archives.py`), so that linking needs no order among them; the C++
+  toolchain orders the libraries topologically.
+- A manifest's default features are on, as in getdeps, except fbthrift's
+  `benchmark` (`FEATURES_OFF` in `generate.py`).
+- folly's system libraries include zlib and bzip2, which it links when
+  CMake finds them although its manifest lists them on Windows only.
 
 ## The Haskell rules and toolchains
 

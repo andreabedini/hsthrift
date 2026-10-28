@@ -18,10 +18,19 @@ project root, so everything is made absolute here.
 
 Patches are applied with `patch -p1` in a copy of the source tree, as
 getdeps applies a manifest's patchfile.
+
+As in getdeps, the number of parallel jobs is the memory available divided
+by what one job of the project takes (--job-weight-mib, the manifest's
+job_weight_mib), and at most the number of CPUs; here only half the memory
+available is counted, to leave room for everything else on the machine. And
+as in getdeps, each process of the build is limited to ten times that much
+virtual memory, so that a runaway compiler fails rather than take the
+machine down with it.
 """
 
 import argparse
 import os
+import resource
 import shutil
 import subprocess
 import sys
@@ -31,6 +40,22 @@ import tempfile
 def run(cmd, cwd=None):
     print("+ " + " ".join(cmd), file=sys.stderr, flush=True)
     subprocess.run(cmd, check=True, cwd=cwd)
+
+
+def limit_memory(job_weight_mib):
+    limit = job_weight_mib * 10 * 1024 * 1024
+    resource.setrlimit(resource.RLIMIT_AS, (limit, limit))
+
+
+def jobs(job_weight_mib):
+    cpus = os.cpu_count() or 1
+    try:
+        with open("/proc/meminfo") as f:
+            meminfo = dict(line.split(":", 1) for line in f)
+        available_mib = int(meminfo["MemAvailable"].split()[0]) // 1024
+    except (OSError, KeyError, ValueError):
+        return 1
+    return max(1, min(cpus, available_mib // 2 // job_weight_mib))
 
 
 def copy_source(src, scratch, patches):
@@ -51,7 +76,7 @@ def cmake(args, src, prefix, scratch):
         "CMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
     ] + args.define
     run(["cmake", "-S", src, "-B", build_dir, "-G", "Ninja"] + ["-D" + d for d in defines])
-    run(["cmake", "--build", build_dir])
+    run(["cmake", "--build", build_dir, "-j", str(jobs(args.job_weight_mib))])
     run(["cmake", "--install", build_dir])
 
 
@@ -67,8 +92,7 @@ def autoconf(args, src, prefix, scratch):
         + args.configure_arg,
         cwd=build_dir,
     )
-    jobs = "-j{}".format(os.cpu_count() or 1)
-    run(["make", jobs] + args.build_arg, cwd=build_dir)
+    run(["make", "-j{}".format(jobs(args.job_weight_mib))] + args.build_arg, cwd=build_dir)
     run(["make"] + (args.install_arg or ["install"]), cwd=build_dir)
 
 
@@ -84,6 +108,7 @@ def main() -> int:
     parser.add_argument("--build-arg", action="append", default=[])
     parser.add_argument("--install-arg", action="append", default=[])
     parser.add_argument("--patch", action="append", default=[])
+    parser.add_argument("--job-weight-mib", type=int, default=1536)
     args = parser.parse_args()
 
     src = os.path.abspath(os.path.join(args.src, args.subdir))
@@ -96,6 +121,9 @@ def main() -> int:
         os.makedirs(scratch, exist_ok=True)
         # Temporary files of the build go there too, not to /tmp.
         os.environ["TMPDIR"] = scratch
+
+    # Inherited by everything the build runs.
+    limit_memory(args.job_weight_mib)
 
     builders = {"cmake": cmake, "autoconf": autoconf}
     try:

@@ -25,7 +25,9 @@ getdeps_project(
         "//build/buck/deps/fizz:fizz-build",
         "//build/buck/deps/folly:folly-build",
     ],
-    libraries = [],
+    libraries = [
+        "mvfst",
+    ],
     visibility = [
         "PUBLIC",
     ],
@@ -33,10 +35,12 @@ getdeps_project(
 
 prebuilt_cxx_library(
     name = "mvfst",
-    header_only = True,
+    static_lib = ":mvfst-build[libmvfst]",
+    static_pic_lib = ":mvfst-build[libmvfst]",
     header_dirs = [
         ":mvfst-build[include]",
     ],
+    preferred_linkage = "static",
     exported_deps = [
         "//build/buck/deps/fizz:fizz",
         "//build/buck/deps/folly:folly",

@@ -69,13 +69,23 @@ EXTRA_DEFINES = {
     "BOOST_LINK_STATIC": "OFF",
 }
 
+# Features of a project to turn off, among the ones its manifest turns on
+# by default (as a dependent would ask getdeps with `name = !feature`).
+FEATURES_OFF = {
+    # The benchmark programs need Google Benchmark, and nothing uses them.
+    "fbthrift": ["benchmark"],
+}
+
 # Dependencies of our own for a project, added to its manifest's.
 EXTRA_DEPENDENCIES = {
     # folly uses liburing whenever <liburing.h> exists (see
     # folly/io/async/Liburing.h), and at build/deps/github_hashes it needs
     # 2.15 or later, which some distributions do not have (Fedora 44 has
     # 2.13). Its manifest does not list it. See build/buck/manifests/liburing.
-    "folly": ["liburing"],
+    # folly also links zlib and bzip2 when CMake finds them (they are in the
+    # Libs.private of the libfolly.pc it installs), which the manifest lists
+    # on Windows only.
+    "folly": ["liburing", "zlib", "bzip2"],
 }
 
 # Tools getdeps adds as dependencies; they come from PATH here.
@@ -89,26 +99,23 @@ LIBRARIES = {
     "folly": ["folly"],
     "fizz": ["fizz"],
     "wangle": ["wangle"],
-    # TODO: mvfst installs a library per component.
-    "mvfst": [],
-    # In the order of thrift-cpp-channel.cabal's extra-libraries.
-    "fbthrift": [
-        "thriftcpp2",
-        "thriftmetadata",
-        "thriftprotocol",
-        "thrifttyperep",
-        "thriftanyrep",
-        "thrifttype",
-        "transport",
-        "rpcmetadata",
-        "concurrency",
-        "thrift-core",
-        "async",
-    ],
+    # mvfst, wangle and folly also install an archive for each component,
+    # which the one named here has all of.
+    "mvfst": ["mvfst"],
+    # Merged (see MERGED_LIBRARIES).
+    "fbthrift": ["fbthrift"],
+}
+
+# Projects that install an archive for each component and none with all of
+# them: the archive to make of them all (merge_archives.py). Linking it needs
+# no order among the components.
+MERGED_LIBRARIES = {
+    "fbthrift": "fbthrift",
 }
 
 # The libraries of each system dependency, as the name given to -l.
 SYSTEM_LIBRARIES = {
+    "bzip2": ["bz2"],
     "boost": [
         "boost_context",
         "boost_filesystem",
@@ -232,6 +239,8 @@ def source(name: str, manifest: ManifestParser, ctx, sources: dict):
 def starlark(value, indent: str = "") -> str:
     if isinstance(value, bool):
         return "True" if value else "False"
+    if isinstance(value, int):
+        return str(value)
     if isinstance(value, str):
         return json.dumps(value)
     if isinstance(value, list):
@@ -271,6 +280,12 @@ HEADER = """\
 def generate_source_build(name: str, ctx, from_source: set, sources: dict, system: set) -> str:
     path = find(MANIFESTS, name, "manifest")
     manifest = ManifestParser(path)
+
+    # The manifest's default features are on, as in getdeps; an unset
+    # feature counts as off.
+    ctx = ctx.copy()
+    for feature in manifest.default_features - set(FEATURES_OFF.get(name, [])):
+        ctx.set("feature_" + feature, "on")
     builder = manifest.get("build", "builder", ctx=ctx)
     if builder not in ("cmake", "autoconf"):
         raise SystemExit(f"{name}: only cmake and autoconf builds are supported, not {builder}")
@@ -322,8 +337,10 @@ def generate_source_build(name: str, ctx, from_source: set, sources: dict, syste
             build_args=manifest.get_section_as_args("make.build_args", ctx) or None,
             install_args=manifest.get_section_as_args("make.install_args", ctx) or None,
             patches=patches or None,
+            job_weight_mib=int(manifest.get("build", "job_weight_mib", ctx=ctx) or 0) or None,
             deps=build_deps,
-            libraries=libraries,
+            libraries=[lib for lib in libraries if lib != MERGED_LIBRARIES.get(name)],
+            merged_library=MERGED_LIBRARIES.get(name),
             visibility=["PUBLIC"],
         )
     )

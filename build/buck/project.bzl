@@ -72,6 +72,8 @@ def _getdeps_project_impl(ctx: AnalysisContext) -> list[Provider]:
         [cmd_args("--build-arg=" + a) for a in ctx.attrs.build_args],
         [cmd_args("--install-arg=" + a) for a in ctx.attrs.install_args],
         [cmd_args("--patch", p) for p in ctx.attrs.patches],
+        "--job-weight-mib",
+        str(ctx.attrs.job_weight_mib),
     )
     ctx.actions.run(
         cmd,
@@ -81,11 +83,31 @@ def _getdeps_project_impl(ctx: AnalysisContext) -> list[Provider]:
         },
         category = ctx.attrs.builder,
         local_only = True,
+        # All of the local slots: these builds run their own jobs (see
+        # build_project.py), and two of them at once could take more memory
+        # than the machine has.
+        weight_percentage = 100,
     )
 
     sub_targets = {"include": [DefaultInfo(default_output = prefix.project("include"))]}
     for lib in ctx.attrs.libraries:
         sub_targets["lib" + lib] = [DefaultInfo(default_output = prefix.project("lib/lib{}.a".format(lib)))]
+
+    # All the archives the project installed, merged into one, for a project
+    # that installs one for each component and none with all of them.
+    if ctx.attrs.merged_library:
+        merged = ctx.actions.declare_output("lib{}.a".format(ctx.attrs.merged_library))
+        ctx.actions.run(
+            cmd_args(
+                ctx.attrs._python[PythonBootstrapToolchainInfo].interpreter,
+                ctx.attrs._merge_script,
+                prefix,
+                merged.as_output(),
+            ),
+            category = "merge_archives",
+            local_only = True,
+        )
+        sub_targets["lib" + ctx.attrs.merged_library] = [DefaultInfo(default_output = merged)]
 
     return [
         DefaultInfo(default_output = prefix, sub_targets = sub_targets),
@@ -103,11 +125,18 @@ _getdeps_project = rule(
         "host_cxxflags": attrs.list(attrs.string(), default = []),
         "host_defines": attrs.dict(attrs.string(), attrs.string(), sorted = False, default = {}),
         "install_args": attrs.list(attrs.string(), default = []),
+        # Memory one job of the build takes, for the number of jobs (see
+        # build_project.py); getdeps's default.
+        "job_weight_mib": attrs.int(default = 1536),
         "libraries": attrs.list(attrs.string(), default = []),
+        # The name of an archive to make of all the ones installed, see
+        # merge_archives.py; its subtarget is [lib<name>].
+        "merged_library": attrs.option(attrs.string(), default = None),
         "patches": attrs.list(attrs.source(), default = []),
         "src": attrs.source(allow_directory = True),
         "subdir": attrs.string(default = ""),
         "_python": attrs.toolchain_dep(default = "toolchains//:python_bootstrap", providers = [PythonBootstrapToolchainInfo]),
+        "_merge_script": attrs.source(default = "root//build/buck:merge_archives.py"),
         "_script": attrs.source(default = "root//build/buck:build_project.py"),
     },
 )

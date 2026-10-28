@@ -23,6 +23,7 @@ getdeps_project(
         "BUILD_BENCHMARKS": "OFF",
         "BUILD_EXAMPLES": "OFF",
     },
+    job_weight_mib = 1024,
     deps = [
         "//build/buck/deps/fast_float:fast_float-build",
         "//build/buck/deps/fmt:fmt-build",
@@ -63,6 +64,8 @@ prebuilt_cxx_library(
         "//build/buck/deps/system:xz",
         "//build/buck/deps/system:zstd",
         "//build/buck/deps/liburing:liburing",
+        "//build/buck/deps/system:zlib",
+        "//build/buck/deps/system:bzip2",
     ],
     visibility = [
         "PUBLIC",
