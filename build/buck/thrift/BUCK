@@ -6,6 +6,7 @@ load(":defs.bzl", "thrift_cpp", "thrift_file", "thrift_hs")
 
 LIB = "//:thrift-lib-0.2.0.0-package"
 SERVER = "//:thrift-server-0.1.0.1-package"
+TESTS = "//:thrift-tests-0.1.0.0-package"
 
 # What the test libraries of thrift-lib, thrift-server and thrift-http have
 # in common.
@@ -28,7 +29,7 @@ thrift_hs(
     name = "thrift-lib-test",
     files = TEST + [
         thrift_file(LIB, "test/if/echoer.thrift", ["--use-int"]),
-        thrift_file("//:thrift-tests-0.1.0.0-package", "if/hs_test.thrift"),
+        thrift_file(TESTS, "if/hs_test.thrift"),
     ],
     visibility = ["PUBLIC"],
 )
@@ -55,5 +56,52 @@ thrift_cpp(
     files = [
         thrift_file(LIB, "if/RpcOptions.thrift"),
     ],
+    visibility = ["PUBLIC"],
+)
+
+thrift_hs(
+    name = "thrift-tests",
+    files = [
+        thrift_file(TESTS, "thrift/annotation/thrift.thrift"),
+        thrift_file(TESTS, "thrift/annotation/scope.thrift"),
+        thrift_file(TESTS, "if/hs_prefix.thrift"),
+        thrift_file(TESTS, "if/foo.thrift"),
+        thrift_file(TESTS, "if/constants.thrift"),
+        thrift_file(TESTS, "if/duplicate.thrift", ["--duplicate-names"]),
+        thrift_file(TESTS, "if/EnumConst.thrift"),
+        thrift_file(TESTS, "if/enum.thrift"),
+        thrift_file(TESTS, "if/exception.thrift"),
+        thrift_file(TESTS, "if/flags.thrift", ["--use-int", "--use-hash-map", "--use-hash-set"]),
+        thrift_file(TESTS, "if/hasfield.thrift", ["--extra-hasfields"]),
+        thrift_file(TESTS, "if/A.thrift"),
+        thrift_file(TESTS, "if/B.thrift"),
+        thrift_file(TESTS, "if/C.thrift"),
+        thrift_file(TESTS, "if/D.thrift"),
+        thrift_file(TESTS, "if/E.thrift"),
+        thrift_file(TESTS, "if/versions.thrift"),
+        thrift_file(TESTS, "if/monoid.thrift"),
+        thrift_file(TESTS, "if/hs_test.thrift"),
+        thrift_file(TESTS, "if/map.thrift"),
+        thrift_file(TESTS, "if/messed_up_case.thrift"),
+        thrift_file(TESTS, "if/namespace.thrift"),
+        thrift_file(TESTS, "if/namespace_included.thrift"),
+        thrift_file(TESTS, "if/parens.thrift"),
+        thrift_file(TESTS, "if/huge.thrift", ["--required-symbols", "A,B,C,X,weNeedThis"]),
+        thrift_file(TESTS, "if/scoped_enums.thrift"),
+        thrift_file(TESTS, "if/service.thrift"),
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# Not generated: what the Makefile's `thrift-hs` copies into compiler/tests,
+# which thrift-compiler's test suite reads.
+genrule(
+    name = "thrift-compiler-tests",
+    out = "tests",
+    cmd = " && ".join([
+        "mkdir -p $OUT/if $OUT/thrift",
+        "cp $(location {})/if/*.thrift $(location {})/if/*.hs $OUT/if/".format(TESTS, TESTS),
+        "cp -RL $(location //thrift:annotation)/annotation $OUT/thrift/",
+    ]),
     visibility = ["PUBLIC"],
 )

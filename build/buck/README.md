@@ -2,7 +2,7 @@
 
 Work in progress: building hsthrift with [Buck2](https://buck2.build). So
 far this covers the C++ dependencies that `new_install_deps.sh` builds with
-getdeps, the Haskell toolchains, and the Haskell packages but for their test
+getdeps, the Haskell toolchains, and the Haskell packages with their test
 suites (see "The Haskell packages").
 
 buck2 itself, buildifier and yq are in `mise.toml`, at the versions
@@ -142,15 +142,27 @@ the plan, whose name has the package's version in it. Change it in
 the C++ is made by `thrift1`, from the fbthrift that the packages link.
 
 The plan has every package of the repository, with their libraries,
-sublibraries and executables. cabal-solver-plan does not plan test suites,
-so they are not in it, and neither is anything of `thrift-tests` but its
-`cabal_package` target (its Thrift files are compiled for
-`thrift-lib:test-lib`). Its targets are named after the packages, e.g.
+sublibraries, executables and test suites: `--constraint 'PKG test'` asks
+the solver for the test suites of PKG. Its targets are named after the
+packages, e.g.
 
     buck2 run //:exe-mangle -- "int foo(int, char const*)"
     buck2 run //:exe-thrift-compiler -- --hs $PWD/lib/if/RpcOptions.thrift -o /tmp/out
     buck2 build //:thrift-lib //:thrift-cpp-channel //:thrift-server //:thrift-http //:thrift-haxl
-    buck2 build //:thrift-lib-test-lib //:thrift-server-test-lib //:thrift-http-test-lib
+    buck2 test //:thrift-lib-test-client //:thrift-server-test-server
+
+and `buck2 test //:` runs every test suite, from the root of its package as
+Cabal does. Two suites of thrift-tests (`integration`, `message`) are not
+buildable: they depend on a package `cpp-channel`, which does not exist, so
+the solver turns their flag `fbthrift` off, as cabal does; nor is
+thrift-cpp-channel's `header-channel`, which is broken (see its .cabal
+file). fb-util's tests need regex-pcre, planned with `-pkg-config` so that
+it links the system's libpcre (pcre-devel on Fedora).
+
+Besides the generated code, a few directories the Makefile makes are
+targets of `thrift/BUCK` too: `compiler/tests` (copies of `tests/if` and of
+the annotations) and `compiler/thrift` (the annotations, `//thrift:annotation`),
+which thrift-compiler's test suite reads.
 
 thrift-compiler is a tool of the build there, so Buck2 builds it, and what
 it depends on (fb-util, and so folly), in the configuration of the tools as
