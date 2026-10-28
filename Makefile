@@ -244,5 +244,12 @@ setup-folly-0::
 	sed "s|__CPP_FILES__||;s|__H_FILES__||" <folly-clib/folly-clib.cabal.in | grep -v '^\s*install-includes' | grep -v '\.h$$' >folly-clib/folly-clib.cabal
 	sed -i "s/^version:\(\s*\).*$$/version:\10.0/" folly-clib/folly-clib.cabal
 
+# Make folly-clib.cabal for the Buck2 build (build/buck/README.md): folly
+# is a Buck2 target there, and folly-clib is built with -bundled-folly, so
+# the placeholders for folly's sources stay as they are.
+.PHONY: setup-folly-buck
+setup-folly-buck::
+	cp folly-clib/folly-clib.cabal.in folly-clib/folly-clib.cabal
+
 setup-meta::
 	ln -s cabal-meta.project cabal.project

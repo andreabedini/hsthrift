@@ -69,17 +69,18 @@ remote_test_execution_toolchain(
 # there are kept).
 #
 # toolchains//:haskell is the GHC of every Haskell rule. hsthrift is built
-# with 9.6.7 (its packages need ghc < 9.9; Glean's CI tests 9.6.7 too). The
-# tools the rules run (exec deps, like timbuktu's helpers, which need Cabal
-# 3.12 or later) are built with 9.12.2: Buck2 puts the exec platform marker
-# in the configuration of every exec dep. To change either:
+# with 9.6.7 (its packages need ghc < 9.9; Glean's CI tests 9.6.7 too), and
+# so are the build tools of its plan (happy, alex, hsc2hs). timbuktu's
+# helpers, which need Cabal 3.12 or later, are built with 9.12.2: their
+# configuration has the constraint timbuktu//rules/haskell/helpers:yes. To
+# change either:
 #
 #   buck2 build --config haskell.toolchain=toolchains//:ghc-9.12.2 ...
 #   buck2 build --config haskell.tools_toolchain=... ...
 toolchain_alias(
     name = "haskell",
     actual = select({
-        "prelude//cfg/exec_platform/marker:is_exec_platform[true]": read_root_config("haskell", "tools_toolchain", "toolchains//:ghc-9.12.2"),
+        "timbuktu//rules/haskell/helpers:yes": read_root_config("haskell", "tools_toolchain", "toolchains//:ghc-9.12.2"),
         "DEFAULT": read_root_config("haskell", "toolchain", "toolchains//:ghc-9.6.7"),
     }),
     visibility = ["PUBLIC"],

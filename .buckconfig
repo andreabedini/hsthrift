@@ -20,7 +20,7 @@
 # The Haskell rules: https://github.com/andreabedini/timbuktu
 [external_cell_timbuktu]
   git_origin = https://github.com/andreabedini/timbuktu.git
-  commit_hash = 2e862314766c473a4dd1e03083cc1431f3d21fc7
+  commit_hash = 027c9f8f2d3f769eb69b9b4e459e83bab102fb1a
 
 [build]
   execution_platforms = prelude//platforms:default

@@ -82,9 +82,9 @@ The Haskell rules are timbuktu's, a git external cell pinned to a commit in
 timbuktu, change `commit_hash`.
 
 The toolchains are in `toolchains/BUCK`. `toolchains//:haskell`, the GHC
-of every Haskell rule, is GHC 9.6.7 for the packages (hsthrift needs
-ghc < 9.9) and 9.12.2 for the tools the rules run, whose helpers need Cabal
-3.12 or later. The GHC and cabal-install distributions are pinned in
+of every Haskell rule, is GHC 9.6.7 for the packages and their build
+tools (hsthrift needs ghc < 9.9) and 9.12.2 for timbuktu's own helpers,
+which need Cabal 3.12 or later. The GHC and cabal-install distributions are pinned in
 `toolchains/ghcup/BUCK`, which is generated; to pin another version:
 
     buck2 bxl timbuktu//rules/haskell/ghcup/ghcup.bxl:pin -- --ghc 9.8.4
@@ -110,11 +110,21 @@ cabal-solver-plan, whose path goes in `.buckconfig.local`:
     [haskell]
       cabal_solver_plan = /path/to/cabal-solver-plan
 
-So far the plan has `fb-stubs` and `mangle`:
+The C and C++ libraries a package names in `pkgconfig-depends` are Buck2
+targets, given to `plan.bxl` as `--pkgconfig NAME=TARGET`: the libraries of
+`build/buck/deps`. pkg-config is not run. The solver takes each NAME as
+installed, and the package's targets get TARGET in `cxx_deps`; their
+headers reach whatever depends on the package too, as with Cabal.
+
+folly comes from `build/buck/deps/folly`, through `folly-clib` with
+`-bundled-folly`: there `folly-clib.cabal` is only `pkgconfig-depends:
+libfolly`. That file is not in the repository (the Makefile makes it from
+`folly-clib.cabal.in`), and `plan.bxl` needs it; before planning, run
+
+    make setup-folly-buck
+
+So far the plan has `fb-stubs`, `mangle`, `folly-clib` and `fb-util` (with
+`+folly`):
 
     buck2 run //:exe-mangle -- "int foo(int, char const*)"
-
-`fb-util`, which every other package needs, depends on C++ libraries
-(`pkgconfig-depends`, and folly through `folly-clib`), which timbuktu's
-`cabal_simple` rules cannot take yet.
-
+    buck2 build //:fb-util
