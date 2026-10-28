@@ -2,8 +2,8 @@
 
 Work in progress: building hsthrift with [Buck2](https://buck2.build). So
 far this covers the C++ dependencies that `new_install_deps.sh` builds with
-getdeps, the Haskell toolchains, and the Haskell packages that need no C++
-(`fb-stubs`, `mangle`); the others still build with cabal.
+getdeps, the Haskell toolchains, and some of the Haskell packages (see "The
+Haskell packages"); the others still build with cabal.
 
 buck2 itself, buildifier and yq are in `mise.toml`, at the versions
 [timbuktu](https://github.com/andreabedini/timbuktu) uses (its rules need
@@ -123,8 +123,9 @@ libfolly`. That file is not in the repository (the Makefile makes it from
 
     make setup-folly-buck
 
-So far the plan has `fb-stubs`, `mangle`, `folly-clib` and `fb-util` (with
-`+folly`):
+So far the plan has `fb-stubs`, `mangle`, `folly-clib`, `fb-util` (with
+`+folly`) and `thrift-compiler`:
 
     buck2 run //:exe-mangle -- "int foo(int, char const*)"
     buck2 build //:fb-util
+    buck2 run //:exe-thrift-compiler -- --hs $PWD/lib/if/RpcOptions.thrift -o /tmp/out

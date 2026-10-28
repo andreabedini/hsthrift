@@ -2,7 +2,7 @@
 # cabal-solver-plan made for ghc-9.6.7 on x86_64-linux, with the index
 # of hackage.haskell.org as of 2025-04-13T19:49:54Z. Make it again with
 #
-#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
+#   buck2 bxl timbuktu//rules/haskell/cabal_install/plan.bxl:generate -- --local-package common/github --local-package common/mangle --local-package folly-clib --local-package common/util --local-package compiler --pkgconfig libfolly=//build/buck/deps/folly:folly --pkgconfig libglog=//build/buck/deps/system:glog --pkgconfig libevent=//build/buck/deps/system:libevent --pkgconfig fmt=//build/buck/deps/fmt:fmt --pkgconfig gflags=//build/buck/deps/system:gflags --buck-dir . --index-state 2025-04-14T00:00:00Z --flag fb-util:+folly --flag folly-clib:-bundled-folly
 
 load("@timbuktu//rules/haskell:defs.bzl", "haskell_unit")
 load("@timbuktu//rules/haskell/cabal:defs.bzl", "cabal_package", "cabal_simple_executable", "cabal_simple_library")
@@ -14,6 +14,12 @@ load("@timbuktu//rules/haskell/cabal_install:pkg_src.bzl", "repo_package")
 alias(
     name = "exe-mangle",
     actual = ":mangle-0.1.0.1-exe-mangle",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "exe-thrift-compiler",
+    actual = ":thrift-compiler-0.3.0.0-exe-thrift-compiler",
     visibility = ["PUBLIC"],
 )
 
@@ -38,6 +44,12 @@ alias(
 alias(
     name = "mangle",
     actual = ":mangle-0.1.0.1",
+    visibility = ["PUBLIC"],
+)
+
+alias(
+    name = "thrift-compiler",
+    actual = ":thrift-compiler-0.3.0.0",
     visibility = ["PUBLIC"],
 )
 
@@ -355,6 +367,44 @@ build(
         ":text-2.0.2",
         ":unordered-containers-0.2.20",
         ":vector-0.13.2.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# alex-3.5.3.0
+
+repo_package(
+    name = "alex-3.5.3.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "f6fde8ff59e7e38f9e95eca8f5154fb611c9789d1d9538aa9745c6c3cd9495b4",
+            "size": 4502,
+        },
+        "name": "alex",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "a5cd52e2dd2837138523e2e24ec3435b8cf2624afd50725105e644226e0b9ec6",
+            "size": 92759,
+            "type": "repo-tar",
+        },
+        "version": "3.5.3.0",
+    },
+)
+
+build(
+    name = "alex-3.5.3.0-exe-alex",
+    pkg_name = "alex",
+    pkg_version = "3.5.3.0",
+    component_name = "exe:alex",
+    src = ":alex-3.5.3.0-src",
+    flags = {},
+    deps = [
+        ":array-0.5.8.0",
+        ":base-4.18.3.0",
+        ":containers-0.6.7",
+        ":directory-1.3.8.5",
     ],
     visibility = ["PUBLIC"],
 )
@@ -809,6 +859,45 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# bytestring-builder-0.10.8.2.0
+
+repo_package(
+    name = "bytestring-builder-0.10.8.2.0-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "6b2b812cdac53f5a2c82376a416dde04adbb5ca3e1604c0d075368a0498f762b",
+            "size": 3781,
+        },
+        "name": "bytestring-builder",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "27faef6db27c5be5a3715fd68b93725853e0e668849eaf92ce7c33cef9cb2c3f",
+            "size": 47366,
+            "type": "repo-tar",
+        },
+        "version": "0.10.8.2.0",
+    },
+)
+
+build(
+    name = "bytestring-builder-0.10.8.2.0",
+    pkg_name = "bytestring-builder",
+    pkg_version = "0.10.8.2.0",
+    component_name = "lib",
+    src = ":bytestring-builder-0.10.8.2.0-src",
+    flags = {
+        "bytestring_has_builder": True,
+    },
+    deps = [
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":deepseq-1.4.8.1",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # bytestring-lexing-0.5.0.15
 
 repo_package(
@@ -1171,6 +1260,43 @@ build(
         ":base-4.18.3.0",
         ":deepseq-1.4.8.1",
         ":hashable-1.4.7.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# data-lens-light-0.1.2.4
+
+repo_package(
+    name = "data-lens-light-0.1.2.4-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "8948efb870a02dbc77c9fa20d09c849cf67cb327e91d80a7f5c9896606007623",
+            "size": 1004,
+        },
+        "name": "data-lens-light",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "dd6b878ff9871a5b12df3dddbbf0dda7ad0e2ecd02c70323d9058a79388af41d",
+            "size": 5544,
+            "type": "repo-tar",
+        },
+        "version": "0.1.2.4",
+    },
+)
+
+build(
+    name = "data-lens-light-0.1.2.4",
+    pkg_name = "data-lens-light",
+    pkg_version = "0.1.2.4",
+    component_name = "lib",
+    src = ":data-lens-light-0.1.2.4-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":mtl-2.3.1",
+        ":template-haskell-2.20.0.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -1640,7 +1766,7 @@ cabal_simple_library(
         ":stm-2.5.1.0",
         ":template-haskell-2.20.0.0",
         ":text-2.0.2",
-        ":text-show-3.11.1",
+        ":text-show-3.10.5",
         ":time-1.12.2",
         ":transformers-0.6.1.0",
         ":unix-2.8.6.0",
@@ -1744,6 +1870,45 @@ build(
         ":th-abstraction-0.7.1.0",
         ":transformers-0.6.1.0",
         ":transformers-base-0.4.6",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# generic-deriving-1.14.6
+
+repo_package(
+    name = "generic-deriving-1.14.6-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "f47c071d90370e0eee27dad6139964bed29b2d896b404b3a9516138f0d92ac55",
+            "size": 6755,
+        },
+        "name": "generic-deriving",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "f195c17f1a32a3c9a2bf8762b8f9a9b5f6271f9e6075c887aa3609364356b2af",
+            "size": 50583,
+            "type": "repo-tar",
+        },
+        "version": "1.14.6",
+    },
+)
+
+build(
+    name = "generic-deriving-1.14.6",
+    pkg_name = "generic-deriving",
+    pkg_version = "1.14.6",
+    component_name = "lib",
+    src = ":generic-deriving-1.14.6-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":containers-0.6.7",
+        ":ghc-prim-0.10.0",
+        ":template-haskell-2.20.0.0",
+        ":th-abstraction-0.7.1.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -1987,6 +2152,51 @@ build(
         ":ghc-prim-0.10.0",
         ":os-string-2.0.7",
         ":text-2.0.2",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# haskell-names-0.9.9.1
+
+repo_package(
+    name = "haskell-names-0.9.9.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "79bb41850a7832543731bdbcaf7aace6ddfe121d78656c3c8b184c9ebf36ea18",
+            "size": 12681,
+        },
+        "name": "haskell-names",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "fd73fbf57cfe3312aa5ffa8384864d5536db5418e4a6a6a6a21019d5b9a32d10",
+            "size": 91945,
+            "type": "repo-tar",
+        },
+        "version": "0.9.9.1",
+    },
+)
+
+build(
+    name = "haskell-names-0.9.9.1",
+    pkg_name = "haskell-names",
+    pkg_version = "0.9.9.1",
+    component_name = "lib",
+    src = ":haskell-names-0.9.9.1-src",
+    flags = {},
+    deps = [
+        ":aeson-2.2.3.0",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":data-lens-light-0.1.2.4",
+        ":filepath-1.4.301.0",
+        ":haskell-src-exts-1.23.1",
+        ":mtl-2.3.1",
+        ":transformers-0.6.1.0",
+        ":traverse-with-class-1.0.1.1",
+        ":uniplate-1.6.13",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3494,36 +3704,39 @@ build(
     visibility = ["PUBLIC"],
 )
 
-# text-show-3.11.1
+# text-show-3.10.5
 
 repo_package(
-    name = "text-show-3.11.1-src",
+    name = "text-show-3.10.5-src",
     package = {
         "build-type": "Simple",
         "cabal-file": {
-            "revision": 1,
-            "sha256": "b476fe3b3e53cf06908c755aef98821c27e8bd22bf371ce5c21079e02e7726bd",
-            "size": 15653,
+            "revision": 2,
+            "sha256": "54d1277346a2a677443a0a97e39c161faeac803ce1f84efcf8ce0da0019ac62a",
+            "size": 18495,
         },
         "name": "text-show",
         "src": {
             "repo": "https://hackage.haskell.org/",
-            "sha256": "dd58d5cfc4dc811a93cac64331d72d921a3f4a4081897a27d02a41ce57d5c4a2",
-            "size": 97821,
+            "sha256": "d5b96ef881b1b00c69f0325130931c9df3a5909b2f3aff098b591a77e4abc86a",
+            "size": 102428,
             "type": "repo-tar",
         },
-        "version": "3.11.1",
+        "version": "3.10.5",
     },
 )
 
 build(
-    name = "text-show-3.11.1",
+    name = "text-show-3.10.5",
     pkg_name = "text-show",
-    pkg_version = "3.11.1",
+    pkg_version = "3.10.5",
     component_name = "lib",
-    src = ":text-show-3.11.1-src",
+    src = ":text-show-3.10.5-src",
     flags = {
+        "base-4-9": True,
         "integer-gmp": True,
+        "new-functor-classes": True,
+        "template-haskell-2-11": True,
     },
     deps = [
         ":array-0.5.8.0",
@@ -3531,12 +3744,15 @@ build(
         ":base-compat-batteries-0.14.1",
         ":bifunctors-5.6.2",
         ":bytestring-0.11.5.4",
+        ":bytestring-builder-0.10.8.2.0",
         ":containers-0.6.7",
+        ":generic-deriving-1.14.6",
         ":ghc-boot-th-9.6.7",
         ":ghc-prim-0.10.0",
         ":template-haskell-2.20.0.0",
         ":text-2.0.2",
         ":th-abstraction-0.7.1.0",
+        ":th-lift-0.8.6",
         ":transformers-0.6.1.0",
         ":transformers-compat-0.7.2",
     ],
@@ -3617,6 +3833,44 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# th-lift-0.8.6
+
+repo_package(
+    name = "th-lift-0.8.6-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "0d1298f0604415e801ee1bc9095d8c26246d911d8d78e86d61b10a2588fab727",
+            "size": 2592,
+        },
+        "name": "th-lift",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "04309ad70ef80ed054ebda5b7d34a66642017604019f9e44ad321eec04a1ef1f",
+            "size": 14310,
+            "type": "repo-tar",
+        },
+        "version": "0.8.6",
+    },
+)
+
+build(
+    name = "th-lift-0.8.6",
+    pkg_name = "th-lift",
+    pkg_version = "0.8.6",
+    component_name = "lib",
+    src = ":th-lift-0.8.6-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":ghc-prim-0.10.0",
+        ":template-haskell-2.20.0.0",
+        ":th-abstraction-0.7.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # these-1.2.1
 
 repo_package(
@@ -3652,6 +3906,174 @@ build(
         ":binary-0.8.9.1",
         ":deepseq-1.4.8.1",
         ":hashable-1.4.7.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+# thrift-compiler-0.3.0.0, in compiler
+
+cabal_package(
+    name = "thrift-compiler-0.3.0.0-package",
+    package_name = "thrift-compiler",
+    version = "0.3.0.0",
+    srcs = glob(
+        ["compiler/**"],
+        exclude = ["compiler/BUCK", "compiler/dist-newstyle/**"],
+    ),
+    root = "compiler",
+    cabal_version = "3.6",
+    build_type = "Simple",
+    license = "BSD-3-Clause",
+    copyright = "(c) Facebook, All Rights Reserved",
+    maintainer = "hsthrift-team@fb.com",
+    author = "Facebook, Inc.",
+    homepage = "https://github.com/facebookincubator/hsthrift",
+    synopsis = "A compiler from the Thrift Interface Definition Language (IDL) to Haskell",
+    description = "A compiler from the Thrift Interface Definition Language (IDL) to Haskell.\n\nNOTE: for build instructions and documentation, see\n<https://github.com/facebookincubator/hsthrift>",
+    category = "Thrift",
+    license_files = ["LICENSE"],
+    bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    extra_source_files = [
+        "test/fixtures/**/*.ast",
+        "test/fixtures/gen-hs2/**/*.hs",
+        "test/if/*.thrift",
+        "tests/**/*.thrift",
+        "tests/**/*.hs",
+        "thrift/**/*.thrift",
+    ],
+    extra_doc_files = ["CHANGELOG.md"],
+)
+
+cabal_simple_library(
+    name = "thrift-compiler-0.3.0.0",
+    package = ":thrift-compiler-0.3.0.0-package",
+    exposed_modules = [
+        "Thrift.Compiler",
+        "Thrift.Compiler.GenClient",
+        "Thrift.Compiler.GenConst",
+        "Thrift.Compiler.GenEnum",
+        "Thrift.Compiler.GenFunction",
+        "Thrift.Compiler.GenHaskell",
+        "Thrift.Compiler.GenJSON",
+        "Thrift.Compiler.GenJSONLoc",
+        "Thrift.Compiler.GenService",
+        "Thrift.Compiler.GenStruct",
+        "Thrift.Compiler.GenTypedef",
+        "Thrift.Compiler.GenUnion",
+        "Thrift.Compiler.GenUtils",
+        "Thrift.Compiler.OptParse",
+        "Thrift.Compiler.Options",
+        "Thrift.Compiler.Lexer",
+        "Thrift.Compiler.Parser",
+        "Thrift.Compiler.Plugin",
+        "Thrift.Compiler.Pretty",
+        "Thrift.Compiler.Typechecker",
+        "Thrift.Compiler.Typechecker.Monad",
+        "Thrift.Compiler.Types",
+        "Thrift.Compiler.Plugins.Haskell",
+        "Thrift.Compiler.Plugins.Linter",
+    ],
+    hs_source_dirs = [
+        ".",
+        "plugins",
+    ],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":aeson-2.2.3.0",
+        ":aeson-pretty-0.8.10",
+        ":array-0.5.8.0",
+        ":async-2.2.5",
+        ":base-4.18.3.0",
+        ":bytestring-0.11.5.4",
+        ":containers-0.6.7",
+        ":directory-1.3.8.5",
+        ":either-5.0.2",
+        ":extra-1.8",
+        ":fb-util-0.2.0.1",
+        ":filepath-1.4.301.0",
+        ":haskell-names-0.9.9.1",
+        ":haskell-src-exts-1.23.1",
+        ":mtl-2.3.1",
+        ":optparse-applicative-0.18.1.0",
+        ":pretty-1.1.3.6",
+        ":some-1.0.6",
+        ":text-2.0.2",
+        ":text-show-3.10.5",
+        ":transformers-0.6.1.0",
+        ":unordered-containers-0.2.20",
+    ],
+    build_tool_depends = [
+        ":alex-3.5.3.0-exe-alex",
+        ":happy-2.1.5-exe-happy",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+cabal_simple_executable(
+    name = "thrift-compiler-0.3.0.0-exe-thrift-compiler",
+    package = ":thrift-compiler-0.3.0.0-package",
+    executable_name = "thrift-compiler",
+    main_is = "Main.hs",
+    hs_source_dirs = ["main"],
+    default_language = "Haskell2010",
+    default_extensions = [
+        "BangPatterns",
+        "BinaryLiterals",
+        "DataKinds",
+        "DeriveDataTypeable",
+        "DeriveGeneric",
+        "EmptyCase",
+        "ExistentialQuantification",
+        "FlexibleContexts",
+        "FlexibleInstances",
+        "GADTs",
+        "GeneralizedNewtypeDeriving",
+        "LambdaCase",
+        "MultiParamTypeClasses",
+        "MultiWayIf",
+        "NoMonomorphismRestriction",
+        "OverloadedStrings",
+        "PatternSynonyms",
+        "RankNTypes",
+        "RecordWildCards",
+        "ScopedTypeVariables",
+        "StandaloneDeriving",
+        "TupleSections",
+        "TypeFamilies",
+        "TypeSynonymInstances",
+        "NondecreasingIndentation",
+    ],
+    build_depends = [
+        ":base-4.18.3.0",
+        ":optparse-applicative-0.18.1.0",
+        ":thrift-compiler-0.3.0.0",
     ],
     visibility = ["PUBLIC"],
 )
@@ -3782,6 +4204,43 @@ build(
     visibility = ["PUBLIC"],
 )
 
+# traverse-with-class-1.0.1.1
+
+repo_package(
+    name = "traverse-with-class-1.0.1.1-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 0,
+            "sha256": "7dce92582d86db01cfa6411414db8613f064cad04caee675673a21c55f65e2e9",
+            "size": 2529,
+        },
+        "name": "traverse-with-class",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "a698c9dd8316fc05339f818927b457e0f9a5ca1c1f4abc69a5f68d0c05481030",
+            "size": 10068,
+            "type": "repo-tar",
+        },
+        "version": "1.0.1.1",
+    },
+)
+
+build(
+    name = "traverse-with-class-1.0.1.1",
+    pkg_name = "traverse-with-class",
+    pkg_version = "1.0.1.1",
+    component_name = "lib",
+    src = ":traverse-with-class-1.0.1.1-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":template-haskell-2.20.0.0",
+        ":transformers-0.6.1.0",
+    ],
+    visibility = ["PUBLIC"],
+)
+
 # unbounded-delays-0.1.1.1
 
 repo_package(
@@ -3812,6 +4271,46 @@ build(
     src = ":unbounded-delays-0.1.1.1-src",
     flags = {},
     deps = [":base-4.18.3.0"],
+    visibility = ["PUBLIC"],
+)
+
+# uniplate-1.6.13
+
+repo_package(
+    name = "uniplate-1.6.13-src",
+    package = {
+        "build-type": "Simple",
+        "cabal-file": {
+            "revision": 1,
+            "sha256": "c8b715570d0b4baa72512e677552dd3f98372a64bf9de000e779bd4162fd7be7",
+            "size": 3320,
+        },
+        "name": "uniplate",
+        "src": {
+            "repo": "https://hackage.haskell.org/",
+            "sha256": "e777c94628445556a71f135a42cf72d2cfbaccba5849cc42fbfec8b2182e3ad2",
+            "size": 29787,
+            "type": "repo-tar",
+        },
+        "version": "1.6.13",
+    },
+)
+
+build(
+    name = "uniplate-1.6.13",
+    pkg_name = "uniplate",
+    pkg_version = "1.6.13",
+    component_name = "lib",
+    src = ":uniplate-1.6.13-src",
+    flags = {},
+    deps = [
+        ":base-4.18.3.0",
+        ":containers-0.6.7",
+        ":ghc-prim-0.10.0",
+        ":hashable-1.4.7.0",
+        ":syb-0.7.2.4",
+        ":unordered-containers-0.2.20",
+    ],
     visibility = ["PUBLIC"],
 )
 
