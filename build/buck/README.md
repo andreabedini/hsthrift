@@ -2,8 +2,10 @@
 
 Work in progress: building hsthrift with [Buck2](https://buck2.build). So
 far this covers the C++ dependencies that `new_install_deps.sh` builds with
-getdeps, the Haskell toolchains, and the Haskell packages with their test
-suites (see "The Haskell packages").
+getdeps (and rocksdb, which Glean asks it for), the Haskell toolchains, and
+the Haskell packages with their test suites (see "The Haskell packages").
+Glean builds with this too, with hsthrift as a cell of its project (see
+"From another project").
 
 buck2 itself, buildifier and yq are in `mise.toml`, at the versions
 [timbuktu](https://github.com/andreabedini/timbuktu) uses (its rules need
@@ -132,8 +134,9 @@ The code the Makefile's `thrift-hs` and `thrift-cpp` generate (the
 `gen-hs2` and `gen-cpp2` directories) is made by the targets of
 `thrift/BUCK`, with `thrift_hs` and `thrift_cpp` (`thrift/defs.bzl`), and
 given to `plan.bxl` as `--generated DIR=TARGET`. The components of the
-package DIR is in see TARGET's output at DIR, and the glob of the package
-leaves DIR out, so a `gen-hs2` that `make` left there is not used. Each
+package DIR is in whose modules are there (or all of them, when none is) see
+TARGET's output at DIR in place of what the glob of the package finds there,
+so a `gen-hs2` that `make` left there is not used. Each
 Thrift file is compiled in a copy of its package's directory, where
 `thrift/annotation` is the annotations of the top-level `thrift/` (the
 Makefile links it into the packages instead): its `cabal_package` target in
@@ -164,7 +167,19 @@ targets of `thrift/BUCK` too: `compiler/tests` (copies of `tests/if` and of
 the annotations) and `compiler/thrift` (the annotations, `//thrift:annotation`),
 which thrift-compiler's test suite reads.
 
-thrift-compiler is a tool of the build there, so Buck2 builds it, and what
-it depends on (fb-util, and so folly), in the configuration of the tools as
-well as in that of the packages: folly is built twice. fbthrift is not:
-`thrift1` is run from the build for the packages.
+thrift-compiler and `thrift1` are run from the build for the packages (the
+target configuration, `$(exe_target)`), not from one for the tools, so that
+neither folly nor fbthrift is built twice.
+
+## From another project
+
+hsthrift can be a cell of another project's Buck2 build, as Glean has it,
+with the cells `toolchains` and `timbuktu` the ones hsthrift names (Glean's
+`.buckconfig` sets them to `hsthrift/build/buck/toolchains` and
+`hsthrift/build/buck/timbuktu`). The C++ dependencies are then
+`hsthrift//build/buck/deps/...`, and `thrift_hs` takes the thrift-compiler to
+run and the annotations to use, so that a project with hsthrift's packages
+in its own plan can compile Thrift files with its own thrift-compiler.
+`plan.bxl` takes a package of the cell as `--local-package
+hsthrift//lib=hsthrift//:thrift-lib-0.2.0.0-package`, its `cabal_package` in
+the plan here.

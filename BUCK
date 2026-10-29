@@ -1016,12 +1016,13 @@ repo_package(
 haskell_binary(
     name = "appar-0.1.8-setup",
     srcs = {
-        "Main.hs": ":appar-0.1.8-src[Setup.hs]",
+        "Main.hs": "timbuktu//rules/haskell/cabal_install/helpers:setup_default.hs",
     },
     toolchain_libs = [
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -1101,12 +1102,13 @@ repo_package(
 haskell_binary(
     name = "asn1-parse-0.9.5-setup",
     srcs = {
-        "Main.hs": ":asn1-parse-0.9.5-src[Setup.hs]",
+        "Main.hs": "timbuktu//rules/haskell/cabal_install/helpers:setup_default.hs",
     },
     toolchain_libs = [
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -1150,12 +1152,13 @@ repo_package(
 haskell_binary(
     name = "asn1-types-0.3.4-setup",
     srcs = {
-        "Main.hs": ":asn1-types-0.3.4-src[Setup.hs]",
+        "Main.hs": "timbuktu//rules/haskell/cabal_install/helpers:setup_default.hs",
     },
     toolchain_libs = [
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -1793,12 +1796,13 @@ repo_package(
 haskell_binary(
     name = "byteorder-1.0.4-setup",
     srcs = {
-        "Main.hs": ":byteorder-1.0.4-src[Setup.hs]",
+        "Main.hs": "timbuktu//rules/haskell/cabal_install/helpers:setup_default.hs",
     },
     toolchain_libs = [
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -2911,6 +2915,7 @@ cabal_package(
     category = "Utilities",
     license_files = ["LICENSE"],
     bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
+    visibility = ["PUBLIC"],
 )
 
 cabal_simple_library(
@@ -2985,6 +2990,7 @@ cabal_package(
         "hsc.h",
     ],
     extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
 )
 
 cabal_simple_library(
@@ -5757,6 +5763,7 @@ cabal_package(
     ],
     bug_reports = "https://github.com/facebook/folly/issues",
     extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
 )
 
 cabal_simple_library(
@@ -7404,6 +7411,7 @@ cabal_package(
     license_files = ["LICENSE"],
     bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
     extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
 )
 
 cabal_simple_library(
@@ -7620,6 +7628,7 @@ haskell_binary(
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -7818,6 +7827,7 @@ haskell_binary(
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
@@ -9789,6 +9799,7 @@ cabal_package(
     license_files = ["LICENSE"],
     bug_reports = "https://github.com/facebookincubator/hsthrift/issues",
     extra_doc_files = ["CHANGELOG.md"],
+    visibility = ["PUBLIC"],
 )
 
 cabal_simple_library(
@@ -9916,9 +9927,6 @@ cabal_simple_library(
         ":wai-3.2.4",
         ":warp-3.4.7",
     ],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-http-test",
-    },
     visibility = ["PUBLIC"],
 )
 
@@ -10062,9 +10070,6 @@ cabal_simple_test(
         ":unordered-containers-0.2.20",
         ":wai-3.2.4",
     ],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-http-test",
-    },
 )
 
 # thrift-lib-0.2.0.0, in lib
@@ -10190,7 +10195,6 @@ cabal_simple_library(
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
     generated = {
         "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
     },
     visibility = ["PUBLIC"],
 )
@@ -10240,10 +10244,6 @@ cabal_simple_library(
         ":thrift-lib-0.2.0.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
     visibility = ["PUBLIC"],
 )
 
@@ -10322,7 +10322,6 @@ cabal_simple_library(
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
     generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
         "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
     },
 )
@@ -10393,10 +10392,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10465,10 +10460,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10537,10 +10528,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10609,10 +10596,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10681,10 +10664,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10753,10 +10732,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 cabal_simple_test(
@@ -10825,10 +10800,6 @@ cabal_simple_test(
         ":vector-0.13.2.0",
     ],
     build_tool_depends = [":thrift-compiler-0.3.0.0-exe-thrift-compiler"],
-    generated = {
-        "gen-hs2": "//build/buck/thrift:thrift-lib",
-        "test/gen-hs2": "//build/buck/thrift:thrift-lib-test",
-    },
 )
 
 # thrift-server-0.1.0.1, in server
@@ -10929,9 +10900,6 @@ cabal_simple_library(
         ":utf8-string-1.0.2",
     ],
     build_tool_depends = [":hsc2hs-0.68.10-exe-hsc2hs"],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
-    },
     visibility = ["PUBLIC"],
 )
 
@@ -11083,9 +11051,6 @@ cabal_simple_test(
         ":transformers-0.6.1.0",
         ":unordered-containers-0.2.20",
     ],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
-    },
 )
 
 cabal_simple_test(
@@ -11150,9 +11115,6 @@ cabal_simple_test(
         ":transformers-0.6.1.0",
         ":unordered-containers-0.2.20",
     ],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
-    },
 )
 
 cabal_simple_test(
@@ -11217,9 +11179,6 @@ cabal_simple_test(
         ":transformers-0.6.1.0",
         ":unordered-containers-0.2.20",
     ],
-    generated = {
-        "test/gen-hs2": "//build/buck/thrift:thrift-server-test",
-    },
 )
 
 # thrift-tests-0.1.0.0, in tests
@@ -13738,6 +13697,7 @@ haskell_binary(
         "base",
         "Cabal",
     ],
+    link_style = "static",
 )
 
 build_legacy(
