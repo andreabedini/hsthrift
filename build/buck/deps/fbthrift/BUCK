@@ -6,16 +6,16 @@ load("//build/buck:project.bzl", "getdeps_project")
 http_archive(
     name = "fbthrift-src",
     urls = [
-        "https://github.com/facebook/fbthrift/archive/ed498f3ec3500706322fe761a69513d72a8e9a70.tar.gz",
+        "https://github.com/facebook/fbthrift/archive/5c59d93b0e391d194fa1cf00f819ec5289bbfd63.tar.gz",
     ],
-    sha256 = "f3699275bbe53219e59f6be652a9b0fa799a4fba2fab72946add937fc7019f7e",
+    sha256 = "b237f28e83c2542ab55200e763d2ab2815101857fa6e90ab76065226ab4c03eb",
 )
 
 getdeps_project(
     name = "fbthrift-build",
     builder = "cmake",
     src = ":fbthrift-src",
-    subdir = "fbthrift-ed498f3ec3500706322fe761a69513d72a8e9a70",
+    subdir = "fbthrift-5c59d93b0e391d194fa1cf00f819ec5289bbfd63",
     defines = {
         "CMAKE_INSTALL_RPATH_USE_LINK_PATH": "ON",
         "THRIFT_TESTS": "OFF",
