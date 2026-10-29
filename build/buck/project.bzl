@@ -136,8 +136,8 @@ _getdeps_project = rule(
         "src": attrs.source(allow_directory = True),
         "subdir": attrs.string(default = ""),
         "_python": attrs.toolchain_dep(default = "toolchains//:python_bootstrap", providers = [PythonBootstrapToolchainInfo]),
-        "_merge_script": attrs.source(default = "root//build/buck:merge_archives.py"),
-        "_script": attrs.source(default = "root//build/buck:build_project.py"),
+        "_merge_script": attrs.source(default = "//build/buck:merge_archives.py"),
+        "_script": attrs.source(default = "//build/buck:build_project.py"),
     },
 )
 
