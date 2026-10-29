@@ -1,0 +1,14 @@
+--- a/include/rocksdb/rocksdb_namespace.h
++++ b/include/rocksdb/rocksdb_namespace.h
+@@ -5,6 +5,11 @@
+ 
+ #pragma once
+ 
++// Headers that use uint64_t and the like without including <cstdint>
++// include this one, and GCC 13 and later's standard headers no longer
++// include it for them.
++#include <cstdint>
++
+ // For testing purposes
+ #if ROCKSDB_NAMESPACE == 42
+ #undef ROCKSDB_NAMESPACE

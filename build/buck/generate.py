@@ -58,8 +58,9 @@ sys.path.insert(0, FBCODE_BUILDER)
 from getdeps.manifest import ManifestContext, ManifestParser  # noqa: E402
 from getdeps.getdeps_platform import HostType  # noqa: E402
 
-# What new_install_deps.sh builds from source, in order, and liburing.
-DEFAULT = ["fmt", "fast_float", "liburing", "folly", "fizz", "wangle", "mvfst", "fbthrift"]
+# What new_install_deps.sh builds from source, in order, and liburing; and
+# rocksdb, which Glean asks new_install_deps.sh for.
+DEFAULT = ["fmt", "fast_float", "liburing", "folly", "fizz", "wangle", "mvfst", "fbthrift", "rocksdb"]
 
 # The defines build.sh adds to every build, except that we build static
 # (position-independent) libraries rather than shared ones.
@@ -104,6 +105,7 @@ LIBRARIES = {
     "mvfst": ["mvfst"],
     # Merged (see MERGED_LIBRARIES).
     "fbthrift": ["fbthrift"],
+    "rocksdb": ["rocksdb"],
 }
 
 # Projects that install an archive for each component and none with all of
